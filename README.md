@@ -44,6 +44,19 @@ docker compose -f docker-compose.dev.yml up --build
 | `/services/` | Services |
 | `/about/` | About |
 | `/contact/` | Contact |
+| `/accounts/signup/` | Client sign up |
+| `/accounts/login/` | Client sign in |
+| `/dashboard/` | Client dashboard (projects & progress) |
+| `/dashboard/invoices/` | Invoices (maintenance/hosting clients) |
+
+### Demo client data
+
+```bash
+python manage.py seed_demo_client
+# Login: demo / demo1234
+```
+
+In Django admin, enable **Has maintenance hosting** on a client profile to show invoices.
 
 ## Environment variables
 

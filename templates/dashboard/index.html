@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="dashboard-header">
+    <div class="container">
+        <p class="eyebrow">Client dashboard</p>
+        <h1>Welcome{% if profile.company_name %}, {{ profile.company_name }}{% elif user.first_name %}, {{ user.first_name }}{% else %}, {{ user.username }}{% endif %}</h1>
+        <p class="hero-lead">Track your projects and stay up to date on every milestone.</p>
+    </div>
+</section>
+
+<section class="section dashboard-section">
+    <div class="container">
+        <div class="dashboard-grid">
+            <div class="dashboard-main">
+                <div class="dashboard-panel-header">
+                    <h2>Your projects</h2>
+                </div>
+
+                {% if projects %}
+                <div class="project-list">
+                    {% for project in projects %}
+                    <a href="{% url 'project_detail' project.pk %}" class="project-card">
+                        <div class="project-card-top">
+                            <h3>{{ project.name }}</h3>
+                            <span class="badge badge-{{ project.status }}">{{ project.get_status_display }}</span>
+                        </div>
+                        <p class="project-meta">{{ project.get_project_type_display }}</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ project.progress_percent }}%"></div>
+                        </div>
+                        <p class="progress-label">{{ project.progress_percent }}% complete</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <p>No projects yet. Your webXis project manager will add them here once work begins.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <aside class="dashboard-sidebar">
+                {% if show_invoices %}
+                <div class="sidebar-panel">
+                    <div class="dashboard-panel-header">
+                        <h2>Recent invoices</h2>
+                        <a href="{% url 'invoices' %}" class="link-sm">View all</a>
+                    </div>
+                    {% if recent_invoices %}
+                    <ul class="invoice-mini-list">
+                        {% for invoice in recent_invoices %}
+                        <li>
+                            <span class="invoice-num">{{ invoice.invoice_number }}</span>
+                            <span class="invoice-amt">R {{ invoice.amount }}</span>
+                            <span class="badge badge-invoice-{{ invoice.status }}">{{ invoice.get_status_display }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">No invoices yet.</p>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="sidebar-panel sidebar-panel-muted">
+                    <h2>Maintenance & hosting</h2>
+                    <p>Add a maintenance plan to view invoices and billing history in your dashboard.</p>
+                    <a href="{% url 'contact' %}" class="btn btn-secondary btn-sm">Contact us</a>
+                </div>
+                {% endif %}
+
+                <div class="sidebar-panel">
+                    <h2>Quick links</h2>
+                    <nav class="dashboard-links">
+                        <a href="{% url 'invoices' %}">Invoices</a>
+                        <a href="{% url 'contact' %}">Support</a>
+                    </nav>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

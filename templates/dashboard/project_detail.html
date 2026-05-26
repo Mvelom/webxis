@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<section class="dashboard-header">
+    <div class="container">
+        <a href="{% url 'dashboard' %}" class="back-link">&larr; Back to dashboard</a>
+        <h1>{{ project.name }}</h1>
+        <p class="hero-lead">{{ project.get_project_type_display }} · {{ project.get_status_display }}</p>
+    </div>
+</section>
+
+<section class="section dashboard-section">
+    <div class="container dashboard-detail">
+        <div class="detail-card">
+            <h2>Progress</h2>
+            <div class="progress-bar progress-bar-lg">
+                <div class="progress-fill" style="width: {{ project.progress_percent }}%"></div>
+            </div>
+            <p class="progress-label">{{ project.progress_percent }}% complete</p>
+            {% if project.target_launch_date %}
+            <p class="text-muted">Target launch: {{ project.target_launch_date|date:"j F Y" }}</p>
+            {% endif %}
+        </div>
+
+        {% if project.description %}
+        <div class="detail-card">
+            <h2>Overview</h2>
+            <p>{{ project.description }}</p>
+        </div>
+        {% endif %}
+
+        <div class="detail-card">
+            <h2>Recent updates</h2>
+            {% if updates %}
+            <ul class="update-list">
+                {% for update in updates %}
+                <li>
+                    <strong>{{ update.title }}</strong>
+                    <span class="update-date">{{ update.created_at|date:"j M Y" }}</span>
+                    {% if update.body %}<p>{{ update.body }}</p>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No updates posted yet. Check back soon.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
