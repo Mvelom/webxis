@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="webXis — modern web solutions: design, development, hosting, and digital strategy.">
+    <title>{% block title %}webXis{% endblock %} | Web Solutions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="{% url 'home' %}" class="logo">
+                <span class="logo-mark">W</span>
+                <span class="logo-text">web<span class="logo-accent">Xis</span></span>
+            </a>
+            <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <nav class="site-nav">
+                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+                <a href="{% url 'services' %}" class="{% if request.resolver_match.url_name == 'services' %}active{% endif %}">Services</a>
+                <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
+                <a href="{% url 'contact' %}" class="nav-cta {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="{% url 'home' %}" class="logo">
+                    <span class="logo-mark">W</span>
+                    <span class="logo-text">web<span class="logo-accent">Xis</span></span>
+                </a>
+                <p>Smart web solutions for businesses that want to grow online.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Explore</h4>
+                <a href="{% url 'services' %}">Services</a>
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'contact' %}">Contact</a>
+            </div>
+            <div class="footer-contact">
+                <h4>Get in touch</h4>
+                <p>hello@webxis.co.za</p>
+                <p>+27 00 000 0000</p>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; {% now "Y" %} webXis. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

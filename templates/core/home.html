@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-inner">
+        <p class="eyebrow">Web Solutions Company</p>
+        <h1>We build websites that <span class="gradient-text">work for your business</span></h1>
+        <p class="hero-lead">
+            webXis designs, develops, and maintains modern websites and web apps —
+            from landing pages to full-scale platforms.
+        </p>
+        <div class="hero-actions">
+            <a href="{% url 'contact' %}" class="btn btn-primary">Start a project</a>
+            <a href="{% url 'services' %}" class="btn btn-secondary">Our services</a>
+        </div>
+    </div>
+    <div class="hero-glow" aria-hidden="true"></div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>What we do</h2>
+            <p>End-to-end web solutions tailored to your goals.</p>
+        </div>
+        <div class="card-grid">
+            <article class="card">
+                <div class="card-icon">01</div>
+                <h3>Web Design</h3>
+                <p>Clean, responsive interfaces that reflect your brand and convert visitors into customers.</p>
+            </article>
+            <article class="card">
+                <div class="card-icon">02</div>
+                <h3>Development</h3>
+                <p>Fast, secure sites built with Django, modern frontends, and best-practice architecture.</p>
+            </article>
+            <article class="card">
+                <div class="card-icon">03</div>
+                <h3>Support & Hosting</h3>
+                <p>Ongoing maintenance, updates, and reliable hosting so your site stays online and secure.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container cta-banner">
+        <div>
+            <h2>Ready to launch your next website?</h2>
+            <p>Tell us about your project — we’ll reply within one business day.</p>
+        </div>
+        <a href="{% url 'contact' %}" class="btn btn-primary">Get a quote</a>
+    </div>
+</section>
+{% endblock %}
