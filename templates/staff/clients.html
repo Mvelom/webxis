@@ -3,26 +3,20 @@
 {% block title %}Clients{% endblock %}
 
 {% block staff_content %}
-<header class="staff-page-header">
-    <h1>Clients</h1>
-    <form method="get" class="staff-search">
-        <input type="search" name="q" value="{{ q }}" placeholder="Search name, email, company…" class="form-input">
-        <button type="submit" class="btn btn-secondary btn-sm">Search</button>
-    </form>
+<header class="staff-page-header staff-page-header-row">
+    <div>
+        <h1>Client management</h1>
+        <form method="get" class="staff-search">
+            <input type="search" name="q" value="{{ q }}" placeholder="Search…" class="form-input">
+            <button type="submit" class="btn btn-secondary btn-sm">Search</button>
+        </form>
+    </div>
+    <a href="{% url 'staff_client_create' %}" class="btn btn-primary">+ Add client</a>
 </header>
-
 <div class="staff-panel">
     <div class="table-wrap">
         <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Company</th>
-                    <th>Email</th>
-                    <th>Projects</th>
-                    <th>Hosting</th>
-                </tr>
-            </thead>
+            <thead><tr><th>User</th><th>Company</th><th>Email</th><th>Projects</th><th>Hosting</th></tr></thead>
             <tbody>
                 {% for c in clients %}
                 <tr>
@@ -32,9 +26,7 @@
                     <td>{{ c.project_count }}</td>
                     <td>{% if c.client_profile and c.client_profile.has_maintenance_hosting %}Yes{% else %}—{% endif %}</td>
                 </tr>
-                {% empty %}
-                <tr><td colspan="5" class="text-muted">No clients found.</td></tr>
-                {% endfor %}
+                {% empty %}<tr><td colspan="5" class="text-muted">No clients.</td></tr>{% endfor %}
             </tbody>
         </table>
     </div>

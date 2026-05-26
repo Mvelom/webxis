@@ -1,0 +1,31 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Ticket #{{ ticket.pk }}{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header">
+    <a href="{% url 'staff_tickets' %}" class="back-link">&larr; Tickets</a>
+    <h1>#{{ ticket.pk }} — {{ ticket.subject }}</h1>
+    <p class="text-muted">{{ ticket.client.username }} · {{ ticket.get_priority_display }}</p>
+</header>
+<div class="staff-two-col">
+    <section class="staff-panel">
+        <h2>Ticket</h2>
+        <form method="post" class="staff-form">{% csrf_token %}<input type="hidden" name="action" value="ticket">
+            {% for field in form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+        <p class="mt-md text-muted">{{ ticket.description }}</p>
+    </section>
+    <section class="staff-panel">
+        <h2>Conversation</h2>
+        <ul class="staff-feed">
+            {% for r in replies %}
+            <li class="{% if r.is_staff %}reply-staff{% endif %}"><strong>{{ r.author.username }}</strong><span class="text-muted">{{ r.created_at|date:"j M, H:i" }}</span><p>{{ r.message }}</p></li>
+            {% endfor %}
+        </ul>
+        <form method="post" class="staff-form mt-lg">{% csrf_token %}<input type="hidden" name="action" value="reply">
+            {{ reply_form.message.label_tag }}{{ reply_form.message }}
+            <button type="submit" class="btn btn-secondary">Reply</button>
+        </form>
+    </section>
+</div>
+{% endblock %}

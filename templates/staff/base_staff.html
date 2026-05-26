@@ -3,13 +3,29 @@
 {% block content %}
 <div class="staff-layout">
     <aside class="staff-sidebar">
-        <p class="staff-sidebar-label">Employee portal</p>
+        <p class="staff-sidebar-label">Admin dashboard</p>
         <nav class="staff-nav">
             <a href="{% url 'staff_dashboard' %}" class="{% if request.resolver_match.url_name == 'staff_dashboard' %}active{% endif %}">Overview</a>
+            <span class="staff-nav-group">Clients</span>
             <a href="{% url 'staff_clients' %}" class="{% if 'staff_client' in request.resolver_match.url_name %}active{% endif %}">Clients</a>
+            <a href="{% url 'staff_packages' %}">Packages</a>
+            <span class="staff-nav-group">Projects</span>
             <a href="{% url 'staff_projects' %}" class="{% if 'staff_project' in request.resolver_match.url_name %}active{% endif %}">Projects</a>
-            <a href="{% url 'staff_invoices' %}" class="{% if 'staff_invoice' in request.resolver_match.url_name %}active{% endif %}">Invoices</a>
-            <a href="{% url 'admin:index' %}" target="_blank" rel="noopener">Django admin ↗</a>
+            <span class="staff-nav-group">Finance</span>
+            <a href="{% url 'staff_finance' %}">Finance hub</a>
+            <a href="{% url 'staff_invoices' %}">Invoices</a>
+            <a href="{% url 'staff_payments' %}">Payments</a>
+            <a href="{% url 'staff_subscriptions' %}">Subscriptions</a>
+            <span class="staff-nav-group">Content</span>
+            <a href="{% url 'staff_content' %}">Content hub</a>
+            <a href="{% url 'staff_portfolio' %}">Portfolio</a>
+            <a href="{% url 'staff_announcements' %}">Announcements</a>
+            <a href="{% url 'staff_media' %}">Media</a>
+            <span class="staff-nav-group">Support</span>
+            <a href="{% url 'staff_support' %}">Support hub</a>
+            <a href="{% url 'staff_tickets' %}">Tickets</a>
+            <a href="{% url 'staff_maintenance' %}">Maintenance logs</a>
+            <a href="{% url 'admin:index' %}" target="_blank" rel="noopener" class="staff-nav-admin">Django admin ↗</a>
         </nav>
         <div class="staff-sidebar-footer">
             <span class="text-muted">{{ user.get_username }}</span>

@@ -1,0 +1,16 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Finance{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header"><h1>Financial management</h1><p class="text-muted">Invoices, payments, subscriptions, and packages.</p></header>
+<div class="stat-grid">
+    <div class="stat-card stat-card-warn"><span class="stat-card-value">R {{ total_outstanding }}</span><span class="stat-card-label">Outstanding</span></div>
+    <div class="stat-card"><span class="stat-card-value">R {{ payments_this_month }}</span><span class="stat-card-label">Paid this month</span></div>
+    <div class="stat-card"><span class="stat-card-value">{{ active_subscriptions }}</span><span class="stat-card-label">Active subscriptions</span></div>
+</div>
+<div class="hub-links">
+    <a href="{% url 'staff_invoices' %}" class="hub-card">Invoices</a>
+    <a href="{% url 'staff_payments' %}" class="hub-card">Payments</a>
+    <a href="{% url 'staff_subscriptions' %}" class="hub-card">Subscriptions</a>
+    <a href="{% url 'staff_packages' %}" class="hub-card">Package pricing</a>
+</div>
+{% endblock %}

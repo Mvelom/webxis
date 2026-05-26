@@ -11,45 +11,36 @@
 
 <div class="staff-two-col">
     <section class="staff-panel">
-        <h2>Edit project</h2>
-        <form method="post" class="staff-form">
-            {% csrf_token %}
-            <input type="hidden" name="update_project" value="1">
-            {% for field in form %}
-            <div class="form-row">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-            </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">Save project</button>
+        <h2>Project details</h2>
+        <form method="post" class="staff-form">{% csrf_token %}<input type="hidden" name="action" value="project">
+            {% for field in project_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+        <h2 class="mt-lg">Client update</h2>
+        <form method="post" class="staff-form">{% csrf_token %}<input type="hidden" name="action" value="update">
+            {% for field in update_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary">Publish</button>
         </form>
     </section>
-
     <section class="staff-panel">
-        <h2>Post update for client</h2>
-        <form method="post" class="staff-form">
-            {% csrf_token %}
-            <input type="hidden" name="post_update" value="1">
-            {% for field in update_form %}
-            <div class="form-row">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-            </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-secondary">Publish update</button>
+        <h2>Tasks</h2>
+        <form method="post" class="staff-form compact-form">{% csrf_token %}<input type="hidden" name="action" value="task">
+            {% for field in task_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary btn-sm">Add task</button>
         </form>
-        <h2 class="mt-lg">Update history</h2>
-        <ul class="staff-feed">
-            {% for u in updates %}
-            <li>
-                <strong>{{ u.title }}</strong>
-                <span class="text-muted">{{ u.created_at|date:"j M Y, H:i" }}</span>
-                {% if u.body %}<p>{{ u.body }}</p>{% endif %}
-            </li>
-            {% empty %}
-            <li class="text-muted">No updates yet.</li>
-            {% endfor %}
-        </ul>
+        <ul class="staff-list">{% for t in tasks %}<li><strong>{{ t.title }}</strong> — {{ t.get_status_display }}{% if t.assigned_to %} ({{ t.assigned_to.username }}){% endif %}</li>{% empty %}<li class="text-muted">No tasks.</li>{% endfor %}</ul>
+        <h2 class="mt-lg">Milestones</h2>
+        <form method="post" class="staff-form compact-form">{% csrf_token %}<input type="hidden" name="action" value="milestone">
+            {% for field in milestone_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary btn-sm">Add milestone</button>
+        </form>
+        <ul class="staff-list">{% for m in milestones %}<li>{% if m.is_completed %}✓{% endif %} {{ m.title }}{% if m.due_date %} — due {{ m.due_date|date:"j M" }}{% endif %}</li>{% endfor %}</ul>
+        <h2 class="mt-lg">Revisions</h2>
+        <form method="post" class="staff-form compact-form">{% csrf_token %}<input type="hidden" name="action" value="revision">
+            {% for field in revision_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary btn-sm">Log revision</button>
+        </form>
+        <ul class="staff-list">{% for r in revisions %}<li><strong>{{ r.title }}</strong> — {{ r.get_status_display }}</li>{% endfor %}</ul>
     </section>
 </div>
 {% endblock %}

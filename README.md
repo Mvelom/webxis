@@ -50,16 +50,19 @@ docker compose -f docker-compose.dev.yml up --build
 | `/dashboard/invoices/` | Invoices (maintenance/hosting clients) |
 | `/staff/` | Employee dashboard (staff accounts only) |
 
-### Employee (staff) portal
+### Admin dashboard (`/staff/`)
 
-Staff users (`is_staff=True`) sign in at `/accounts/login/` and are redirected to `/staff/`.
+Internal control center for **WebXis Digital** staff (`is_staff=True`). Sign in at `/accounts/login/`.
 
-- Overview stats, recent projects, overdue invoices
-- Manage clients, projects, progress, and client-visible updates
-- Create and edit invoices
-- Toggle **maintenance & hosting** per client
+| Area | Features |
+|------|----------|
+| **Clients** | Add/edit clients, packages, communication logs, project history |
+| **Projects** | Tasks, milestones, revisions, deadlines, progress, client updates |
+| **Finance** | Invoices, payment tracking, subscriptions, package pricing |
+| **Content** | Portfolio, announcements, media uploads |
+| **Support** | Tickets with replies, maintenance logs |
 
-Create staff in Django admin or: `python manage.py createsuperuser`
+Create staff: `python manage.py createsuperuser` (check **Staff status**).
 
 ### Demo client data
 
