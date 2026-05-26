@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
+from .decorators import employee_required
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
@@ -68,7 +68,7 @@ def _form_create_edit(request, form_class, instance=None, *, title, redirect_to,
     return render(request, "staff/generic_form.html", {"form": form, "title": title})
 
 
-@staff_member_required
+@employee_required
 def staff_dashboard(request):
     today = timezone.localdate()
     projects = Project.objects.select_related("client")
@@ -107,7 +107,7 @@ def staff_dashboard(request):
 # —— Clients ——
 
 
-@staff_member_required
+@employee_required
 def staff_clients(request):
     clients = _client_queryset().annotate(project_count=Count("projects")).order_by("username")
     q = request.GET.get("q", "").strip()
@@ -120,7 +120,7 @@ def staff_clients(request):
     return render(request, "staff/clients.html", {"clients": clients, "q": q})
 
 
-@staff_member_required
+@employee_required
 def staff_client_create(request):
     if request.method == "POST":
         form = StaffClientCreateForm(request.POST)
@@ -133,7 +133,7 @@ def staff_client_create(request):
     return render(request, "staff/generic_form.html", {"form": form, "title": "Add client"})
 
 
-@staff_member_required
+@employee_required
 def staff_client_detail(request, user_id):
     client = get_object_or_404(_client_queryset(), pk=user_id)
     profile, _ = ClientProfile.objects.get_or_create(user=client)
@@ -189,13 +189,13 @@ def staff_client_detail(request, user_id):
 # —— Packages ——
 
 
-@staff_member_required
+@employee_required
 def staff_packages(request):
     packages = ServicePackage.objects.annotate(client_count=Count("assignments"))
     return render(request, "staff/packages.html", {"packages": packages})
 
 
-@staff_member_required
+@employee_required
 def staff_package_create(request):
     return _form_create_edit(
         request,
@@ -206,7 +206,7 @@ def staff_package_create(request):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_package_edit(request, pk):
     package = get_object_or_404(ServicePackage, pk=pk)
     return _form_create_edit(
@@ -222,7 +222,7 @@ def staff_package_edit(request, pk):
 # —— Projects ——
 
 
-@staff_member_required
+@employee_required
 def staff_projects(request):
     projects = Project.objects.select_related("client").order_by("-updated_at")
     status = request.GET.get("status")
@@ -235,7 +235,7 @@ def staff_projects(request):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_project_create(request):
     if request.method == "POST":
         form = StaffProjectForm(request.POST)
@@ -251,7 +251,7 @@ def staff_project_create(request):
     return render(request, "staff/project_form.html", {"form": form, "title": "New project"})
 
 
-@staff_member_required
+@employee_required
 def staff_project_detail(request, pk):
     project = get_object_or_404(Project.objects.select_related("client"), pk=pk)
     forms = {
@@ -324,7 +324,7 @@ def staff_project_detail(request, pk):
 # —— Finance ——
 
 
-@staff_member_required
+@employee_required
 def staff_finance(request):
     today = timezone.localdate()
     return render(
@@ -345,7 +345,7 @@ def staff_finance(request):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_invoices(request):
     invoices = Invoice.objects.select_related("client", "project").order_by("-issued_date")
     status = request.GET.get("status")
@@ -358,7 +358,7 @@ def staff_invoices(request):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_invoice_create(request):
     if request.method == "POST":
         form = StaffInvoiceForm(request.POST)
@@ -374,7 +374,7 @@ def staff_invoice_create(request):
     return render(request, "staff/invoice_form.html", {"form": form, "title": "New invoice"})
 
 
-@staff_member_required
+@employee_required
 def staff_invoice_edit(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
     if request.method == "POST":
@@ -396,13 +396,13 @@ def staff_invoice_edit(request, pk):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_payments(request):
     payments = Payment.objects.select_related("invoice", "invoice__client").order_by("-payment_date")
     return render(request, "staff/payments.html", {"payments": payments})
 
 
-@staff_member_required
+@employee_required
 def staff_payment_create(request):
     if request.method == "POST":
         form = StaffPaymentForm(request.POST)
@@ -423,13 +423,13 @@ def staff_payment_create(request):
     return render(request, "staff/generic_form.html", {"form": form, "title": "Record payment"})
 
 
-@staff_member_required
+@employee_required
 def staff_subscriptions(request):
     subs = Subscription.objects.select_related("client", "package").order_by("next_billing_date")
     return render(request, "staff/subscriptions.html", {"subscriptions": subs})
 
 
-@staff_member_required
+@employee_required
 def staff_subscription_create(request):
     return _form_create_edit(
         request,
@@ -443,7 +443,7 @@ def staff_subscription_create(request):
 # —— Content ——
 
 
-@staff_member_required
+@employee_required
 def staff_content(request):
     return render(
         request,
@@ -457,13 +457,13 @@ def staff_content(request):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_portfolio(request):
     items = PortfolioItem.objects.all()
     return render(request, "staff/portfolio.html", {"items": items})
 
 
-@staff_member_required
+@employee_required
 def staff_portfolio_create(request):
     return _form_create_edit(
         request,
@@ -474,7 +474,7 @@ def staff_portfolio_create(request):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_portfolio_edit(request, pk):
     item = get_object_or_404(PortfolioItem, pk=pk)
     return _form_create_edit(
@@ -487,13 +487,13 @@ def staff_portfolio_edit(request, pk):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_announcements(request):
     items = SiteAnnouncement.objects.all()
     return render(request, "staff/announcements.html", {"items": items})
 
 
-@staff_member_required
+@employee_required
 def staff_announcement_create(request):
     return _form_create_edit(
         request,
@@ -504,13 +504,13 @@ def staff_announcement_create(request):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_media(request):
     assets = MediaAsset.objects.select_related("uploaded_by").order_by("-created_at")
     return render(request, "staff/media.html", {"assets": assets})
 
 
-@staff_member_required
+@employee_required
 def staff_media_upload(request):
     if request.method == "POST":
         form = StaffMediaForm(request.POST, request.FILES)
@@ -528,7 +528,7 @@ def staff_media_upload(request):
 # —— Support ——
 
 
-@staff_member_required
+@employee_required
 def staff_support(request):
     today = timezone.localdate()
     return render(
@@ -545,7 +545,7 @@ def staff_support(request):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_tickets(request):
     tickets = SupportTicket.objects.select_related("client", "assigned_to").order_by("-updated_at")
     status = request.GET.get("status")
@@ -558,7 +558,7 @@ def staff_tickets(request):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_ticket_create(request):
     if request.method == "POST":
         form = StaffTicketForm(request.POST)
@@ -574,7 +574,7 @@ def staff_ticket_create(request):
     return render(request, "staff/generic_form.html", {"form": form, "title": "New support ticket"})
 
 
-@staff_member_required
+@employee_required
 def staff_ticket_detail(request, pk):
     ticket = get_object_or_404(
         SupportTicket.objects.select_related("client", "assigned_to"),
@@ -615,7 +615,7 @@ def staff_ticket_detail(request, pk):
     )
 
 
-@staff_member_required
+@employee_required
 def staff_maintenance(request):
     logs = MaintenanceLog.objects.select_related("client", "project", "performed_by").order_by(
         "-performed_at"
@@ -623,7 +623,7 @@ def staff_maintenance(request):
     return render(request, "staff/maintenance.html", {"logs": logs})
 
 
-@staff_member_required
+@employee_required
 def staff_maintenance_create(request):
     if request.method == "POST":
         form = StaffMaintenanceForm(request.POST)

@@ -26,6 +26,12 @@ def contact(request):
     return render(request, "core/contact.html")
 
 
+def _redirect_authenticated_user(user):
+    if user.is_staff or user.is_superuser:
+        return redirect("staff_dashboard")
+    return redirect("dashboard")
+
+
 class SignUpView(CreateView):
     form_class = SignUpForm
     template_name = "registration/signup.html"
@@ -33,7 +39,7 @@ class SignUpView(CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect("dashboard")
+            return _redirect_authenticated_user(request.user)
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -49,13 +55,27 @@ class SignInView(LoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
-        if self.request.user.is_staff:
+        user = self.request.user
+        if user.is_staff or user.is_superuser:
             return reverse_lazy("staff_dashboard")
         return reverse_lazy("dashboard")
 
     def form_valid(self, form):
-        messages.success(self.request, "Signed in successfully.")
+        user = form.get_user()
+        if user.is_staff or user.is_superuser:
+            messages.success(self.request, "Welcome to the WebXis admin dashboard.")
+        else:
+            messages.success(self.request, "Signed in successfully.")
         return super().form_valid(form)
+
+
+def staff_login_redirect(request):
+    """Send staff to the main sign-in page (same credentials as Django admin)."""
+    if request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser):
+        return redirect("staff_dashboard")
+    from django.urls import reverse
+    login_url = reverse("login")
+    return redirect(f"{login_url}?next=/staff/")
 
 
 def sign_out(request):
@@ -66,7 +86,7 @@ def sign_out(request):
 
 @login_required
 def dashboard(request):
-    if request.user.is_staff:
+    if request.user.is_staff or request.user.is_superuser:
         return redirect("staff_dashboard")
     projects = Project.objects.filter(client=request.user)
     profile = getattr(request.user, "client_profile", None)
