@@ -48,6 +48,18 @@ docker compose -f docker-compose.dev.yml up --build
 | `/accounts/login/` | Client sign in |
 | `/dashboard/` | Client dashboard (projects & progress) |
 | `/dashboard/invoices/` | Invoices (maintenance/hosting clients) |
+| `/staff/` | Employee dashboard (staff accounts only) |
+
+### Employee (staff) portal
+
+Staff users (`is_staff=True`) sign in at `/accounts/login/` and are redirected to `/staff/`.
+
+- Overview stats, recent projects, overdue invoices
+- Manage clients, projects, progress, and client-visible updates
+- Create and edit invoices
+- Toggle **maintenance & hosting** per client
+
+Create staff in Django admin or: `python manage.py createsuperuser`
 
 ### Demo client data
 

@@ -1,0 +1,49 @@
+{% extends "staff/base_staff.html" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block staff_content %}
+<header class="staff-page-header staff-page-header-row">
+    <div>
+        <h1>Projects</h1>
+        <div class="filter-pills">
+            <a href="{% url 'staff_projects' %}" class="{% if not status_filter %}active{% endif %}">All</a>
+            {% for value, label in statuses %}
+            <a href="?status={{ value }}" class="{% if status_filter == value %}active{% endif %}">{{ label }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <a href="{% url 'staff_project_create' %}" class="btn btn-primary">+ New project</a>
+</header>
+
+<div class="staff-panel">
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Client</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>Updated</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in projects %}
+                <tr>
+                    <td><a href="{% url 'staff_project_detail' p.pk %}">{{ p.name }}</a></td>
+                    <td><a href="{% url 'staff_client_detail' p.client_id %}">{{ p.client.username }}</a></td>
+                    <td>{{ p.get_project_type_display }}</td>
+                    <td><span class="badge badge-{{ p.status }}">{{ p.get_status_display }}</span></td>
+                    <td>{{ p.progress_percent }}%</td>
+                    <td>{{ p.updated_at|date:"j M Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-muted">No projects match this filter.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

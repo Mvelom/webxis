@@ -1,0 +1,55 @@
+{% extends "staff/base_staff.html" %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block staff_content %}
+<header class="staff-page-header">
+    <a href="{% url 'staff_projects' %}" class="back-link">&larr; Projects</a>
+    <h1>{{ project.name }}</h1>
+    <p class="text-muted">Client: <a href="{% url 'staff_client_detail' project.client_id %}">{{ project.client.username }}</a></p>
+</header>
+
+<div class="staff-two-col">
+    <section class="staff-panel">
+        <h2>Edit project</h2>
+        <form method="post" class="staff-form">
+            {% csrf_token %}
+            <input type="hidden" name="update_project" value="1">
+            {% for field in form %}
+            <div class="form-row">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Save project</button>
+        </form>
+    </section>
+
+    <section class="staff-panel">
+        <h2>Post update for client</h2>
+        <form method="post" class="staff-form">
+            {% csrf_token %}
+            <input type="hidden" name="post_update" value="1">
+            {% for field in update_form %}
+            <div class="form-row">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-secondary">Publish update</button>
+        </form>
+        <h2 class="mt-lg">Update history</h2>
+        <ul class="staff-feed">
+            {% for u in updates %}
+            <li>
+                <strong>{{ u.title }}</strong>
+                <span class="text-muted">{{ u.created_at|date:"j M Y, H:i" }}</span>
+                {% if u.body %}<p>{{ u.body }}</p>{% endif %}
+            </li>
+            {% empty %}
+            <li class="text-muted">No updates yet.</li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock %}

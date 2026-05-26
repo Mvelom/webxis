@@ -1,0 +1,24 @@
+{% extends "staff/base_staff.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block staff_content %}
+<header class="staff-page-header">
+    <a href="{% url 'staff_invoices' %}" class="back-link">&larr; Invoices</a>
+    <h1>{{ title }}</h1>
+</header>
+
+<section class="staff-panel staff-panel-narrow">
+    <form method="post" class="staff-form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-row">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Save invoice</button>
+    </form>
+</section>
+{% endblock %}

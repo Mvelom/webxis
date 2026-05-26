@@ -27,7 +27,11 @@
                 <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
                 <a href="{% url 'contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
                 {% if user.is_authenticated %}
-                <a href="{% url 'dashboard' %}" class="nav-dashboard {% if 'dashboard' in request.path %}active{% endif %}">Dashboard</a>
+                {% if user.is_staff %}
+                <a href="{% url 'staff_dashboard' %}" class="nav-dashboard {% if '/staff/' in request.path %}active{% endif %}">Staff portal</a>
+                {% else %}
+                <a href="{% url 'dashboard' %}" class="nav-dashboard {% if '/dashboard/' in request.path %}active{% endif %}">Dashboard</a>
+                {% endif %}
                 <a href="{% url 'logout' %}" class="nav-cta">Sign out</a>
                 {% else %}
                 <a href="{% url 'login' %}" class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}">Sign in</a>

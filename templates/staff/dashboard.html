@@ -1,0 +1,87 @@
+{% extends "staff/base_staff.html" %}
+
+{% block title %}Staff overview{% endblock %}
+
+{% block staff_content %}
+<header class="staff-page-header">
+    <h1>Employee dashboard</h1>
+    <p class="text-muted">Manage clients, projects, and billing across webXis.</p>
+</header>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <span class="stat-card-value">{{ stats.client_count }}</span>
+        <span class="stat-card-label">Clients</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-card-value">{{ stats.project_count }}</span>
+        <span class="stat-card-label">Total projects</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-card-value">{{ stats.active_projects }}</span>
+        <span class="stat-card-label">In progress</span>
+    </div>
+    <div class="stat-card stat-card-warn">
+        <span class="stat-card-value">{{ stats.overdue_invoices }}</span>
+        <span class="stat-card-label">Overdue invoices</span>
+    </div>
+</div>
+
+<div class="staff-two-col">
+    <section class="staff-panel">
+        <div class="staff-panel-head">
+            <h2>Recent projects</h2>
+            <a href="{% url 'staff_project_create' %}" class="btn btn-primary btn-sm">+ New project</a>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Client</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in recent_projects %}
+                    <tr>
+                        <td><a href="{% url 'staff_project_detail' p.pk %}">{{ p.name }}</a></td>
+                        <td>{{ p.client.username }}</td>
+                        <td><span class="badge badge-{{ p.status }}">{{ p.get_status_display }}</span></td>
+                        <td>{{ p.progress_percent }}%</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-muted">No projects yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="staff-panel">
+        <h2>Latest client updates</h2>
+        <ul class="staff-feed">
+            {% for u in recent_updates %}
+            <li>
+                <strong>{{ u.title }}</strong>
+                <span class="text-muted">{{ u.project.name }} · {{ u.created_at|date:"j M" }}</span>
+            </li>
+            {% empty %}
+            <li class="text-muted">No updates posted.</li>
+            {% endfor %}
+        </ul>
+        {% if overdue_invoices %}
+        <h2 class="mt-lg">Overdue invoices</h2>
+        <ul class="staff-feed">
+            {% for inv in overdue_invoices %}
+            <li>
+                <strong>{{ inv.invoice_number }}</strong>
+                <span class="text-muted">R {{ inv.amount }} · due {{ inv.due_date|date:"j M Y" }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

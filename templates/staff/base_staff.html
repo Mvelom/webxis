@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="staff-layout">
+    <aside class="staff-sidebar">
+        <p class="staff-sidebar-label">Employee portal</p>
+        <nav class="staff-nav">
+            <a href="{% url 'staff_dashboard' %}" class="{% if request.resolver_match.url_name == 'staff_dashboard' %}active{% endif %}">Overview</a>
+            <a href="{% url 'staff_clients' %}" class="{% if 'staff_client' in request.resolver_match.url_name %}active{% endif %}">Clients</a>
+            <a href="{% url 'staff_projects' %}" class="{% if 'staff_project' in request.resolver_match.url_name %}active{% endif %}">Projects</a>
+            <a href="{% url 'staff_invoices' %}" class="{% if 'staff_invoice' in request.resolver_match.url_name %}active{% endif %}">Invoices</a>
+            <a href="{% url 'admin:index' %}" target="_blank" rel="noopener">Django admin ↗</a>
+        </nav>
+        <div class="staff-sidebar-footer">
+            <span class="text-muted">{{ user.get_username }}</span>
+            <a href="{% url 'logout' %}">Sign out</a>
+        </div>
+    </aside>
+    <div class="staff-main">
+        {% block staff_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

@@ -49,6 +49,8 @@ class SignInView(LoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
+        if self.request.user.is_staff:
+            return reverse_lazy("staff_dashboard")
         return reverse_lazy("dashboard")
 
     def form_valid(self, form):
@@ -64,6 +66,8 @@ def sign_out(request):
 
 @login_required
 def dashboard(request):
+    if request.user.is_staff:
+        return redirect("staff_dashboard")
     projects = Project.objects.filter(client=request.user)
     profile = getattr(request.user, "client_profile", None)
     show_invoices = profile and profile.has_maintenance_hosting
