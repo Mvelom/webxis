@@ -15,4 +15,5 @@ urlpatterns = [
     path("dashboard/", views.dashboard, name="dashboard"),
     path("dashboard/projects/<int:pk>/", views.project_detail, name="project_detail"),
     path("dashboard/invoices/", views.invoices, name="invoices"),
+    path("dashboard/support/", views.client_support, name="client_support"),
 ]

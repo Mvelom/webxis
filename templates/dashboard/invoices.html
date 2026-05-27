@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends "dashboard/base_dashboard.html" %}
 
 {% block title %}Invoices{% endblock %}
 
-{% block content %}
-<section class="dashboard-header">
-    <div class="container">
+{% block dashboard_content %}
+<section class="dashboard-header client-page-hero">
+    <div>
         <a href="{% url 'dashboard' %}" class="back-link">&larr; Back to dashboard</a>
         <h1>Invoices</h1>
         <p class="hero-lead">Maintenance and hosting billing history.</p>
@@ -12,7 +12,6 @@
 </section>
 
 <section class="section dashboard-section">
-    <div class="container">
         {% if maintenance_required %}
         <div class="empty-state">
             <h2>Maintenance plan required</h2>
@@ -51,6 +50,5 @@
             <p>No invoices on file yet.</p>
         </div>
         {% endif %}
-    </div>
 </section>
 {% endblock %}

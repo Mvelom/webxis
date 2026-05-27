@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends "dashboard/base_dashboard.html" %}
 
 {% block title %}{{ project.name }}{% endblock %}
 
-{% block content %}
-<section class="dashboard-header">
-    <div class="container">
+{% block dashboard_content %}
+<section class="dashboard-header client-page-hero">
+    <div>
         <a href="{% url 'dashboard' %}" class="back-link">&larr; Back to dashboard</a>
         <h1>{{ project.name }}</h1>
         <p class="hero-lead">{{ project.get_project_type_display }} · {{ project.get_status_display }}</p>
@@ -12,7 +12,7 @@
 </section>
 
 <section class="section dashboard-section">
-    <div class="container dashboard-detail">
+    <div class="dashboard-detail">
         <div class="detail-card">
             <h2>Progress</h2>
             <div class="progress-bar progress-bar-lg">

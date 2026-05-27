@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import ClientProfile
+from .models import ClientProfile, SupportTicket
 
 
 _input_attrs = {"class": "form-input"}
@@ -58,3 +58,21 @@ class SignInForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         for field_name in ("username", "password"):
             self.fields[field_name].widget.attrs.setdefault("class", "form-input")
+
+
+class ClientSupportTicketForm(forms.ModelForm):
+    class Meta:
+        model = SupportTicket
+        fields = ("subject", "description")
+        widgets = {
+            "subject": forms.TextInput(
+                attrs={**_input_attrs, "placeholder": "What do you need help with?"},
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    **_input_attrs,
+                    "rows": 5,
+                    "placeholder": "Share the details, links, screenshots to send, or anything blocking the project.",
+                },
+            ),
+        }

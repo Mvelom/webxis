@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block body_class %}portal-body client-portal-body{% endblock %}
+{% block site_header %}{% endblock %}
+{% block site_messages %}{% endblock %}
+{% block site_footer %}{% endblock %}
+
+{% block content %}
+<div class="portal-shell client-shell">
+    <aside class="portal-sidebar client-sidebar">
+        <a href="{% url 'dashboard' %}" class="portal-brand">
+            <span class="logo-mark">W</span>
+            <span class="logo-text">web<span class="logo-accent">Xis</span></span>
+        </a>
+
+        <div class="client-company-card">
+            <span class="client-label">Client workspace</span>
+            <strong>
+                {% if profile.company_name %}{{ profile.company_name }}{% elif user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
+            </strong>
+            <span>{{ user.email|default:"Project portal" }}</span>
+        </div>
+
+        <nav class="portal-nav">
+            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <span class="nav-icon">H</span><span>Home</span>
+            </a>
+            <a href="{% url 'invoices' %}" class="{% if request.resolver_match.url_name == 'invoices' %}active{% endif %}">
+                <span class="nav-icon">I</span><span>Invoices</span>
+            </a>
+            <a href="{% url 'client_support' %}" class="{% if request.resolver_match.url_name == 'client_support' %}active{% endif %}">
+                <span class="nav-icon">S</span><span>Support</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-progress">
+            <div class="sidebar-progress-head">
+                <span>Build progress</span>
+                <strong>{{ overall_progress|default:0 }}%</strong>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ overall_progress|default:0 }}%"></div>
+            </div>
+            {% if sidebar_projects %}
+            <div class="sidebar-projects">
+                {% for item in sidebar_projects %}
+                <a href="{% url 'project_detail' item.pk %}" class="sidebar-project-link">
+                    <span>{{ item.name }}</span>
+                    <small>{{ item.progress_percent }}% - {{ item.get_status_display }}</small>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">Your project progress will appear here once work begins.</p>
+            {% endif %}
+        </div>
+
+        <div class="portal-sidebar-footer">
+            <a href="{% url 'home' %}">Public site</a>
+            <a href="{% url 'logout' %}">Sign out</a>
+        </div>
+    </aside>
+
+    <main class="portal-main client-main">
+        {% if messages %}
+        <div class="portal-messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block dashboard_content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}

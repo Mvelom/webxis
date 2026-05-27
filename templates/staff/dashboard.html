@@ -4,8 +4,9 @@
 
 {% block staff_content %}
 <header class="staff-page-header">
-    <h1>WebXis Digital — Admin</h1>
-    <p class="text-muted">Internal control center: clients, projects, finance, content, and support.</p>
+    <p class="eyebrow">Admin dashboard</p>
+    <h1>WebXis operations center</h1>
+    <p class="text-muted">Manage clients, project delivery, invoices, support, content, and maintenance from one workspace.</p>
 </header>
 
 <div class="stat-grid stat-grid-6">
@@ -17,12 +18,18 @@
     <div class="stat-card"><span class="stat-card-value">{{ stats.active_subscriptions }}</span><span class="stat-card-label">Subscriptions</span></div>
 </div>
 
-<div class="quick-links">
-    <a href="{% url 'staff_client_create' %}" class="btn btn-primary btn-sm">+ Client</a>
-    <a href="{% url 'staff_project_create' %}" class="btn btn-secondary btn-sm">+ Project</a>
-    <a href="{% url 'staff_ticket_create' %}" class="btn btn-secondary btn-sm">+ Ticket</a>
-    <a href="{% url 'staff_invoice_create' %}" class="btn btn-secondary btn-sm">+ Invoice</a>
-</div>
+<section class="admin-command-strip">
+    <div>
+        <span class="client-label">Quick create</span>
+        <h2>Start the next admin task</h2>
+    </div>
+    <div class="quick-links">
+        <a href="{% url 'staff_client_create' %}" class="btn btn-primary btn-sm">+ Client</a>
+        <a href="{% url 'staff_project_create' %}" class="btn btn-secondary btn-sm">+ Project</a>
+        <a href="{% url 'staff_ticket_create' %}" class="btn btn-secondary btn-sm">+ Ticket</a>
+        <a href="{% url 'staff_invoice_create' %}" class="btn btn-secondary btn-sm">+ Invoice</a>
+    </div>
+</section>
 
 <div class="staff-two-col">
     <section class="staff-panel">
@@ -35,7 +42,12 @@
                     <tr>
                         <td><a href="{% url 'staff_project_detail' p.pk %}">{{ p.name }}</a></td>
                         <td>{{ p.client.username }}</td>
-                        <td>{{ p.progress_percent }}%</td>
+                        <td>
+                            <div class="table-progress">
+                                <span>{{ p.progress_percent }}%</span>
+                                <div class="progress-bar"><div class="progress-fill" style="width: {{ p.progress_percent }}%"></div></div>
+                            </div>
+                        </td>
                     </tr>
                     {% empty %}<tr><td colspan="3" class="text-muted">No projects.</td></tr>{% endfor %}
                 </tbody>
@@ -46,13 +58,13 @@
         <h2>Open support tickets</h2>
         <ul class="staff-feed">
             {% for t in open_tickets %}
-            <li><a href="{% url 'staff_ticket_detail' t.pk %}"><strong>{{ t.subject }}</strong></a><span class="text-muted">{{ t.client.username }} · {{ t.get_priority_display }}</span></li>
+            <li><a href="{% url 'staff_ticket_detail' t.pk %}"><strong>{{ t.subject }}</strong></a><span class="text-muted">{{ t.client.username }} - {{ t.get_priority_display }}</span></li>
             {% empty %}<li class="text-muted">No open tickets.</li>{% endfor %}
         </ul>
         <h2 class="mt-lg">Overdue invoices</h2>
         <ul class="staff-feed">
             {% for inv in overdue_invoices %}
-            <li><strong>{{ inv.invoice_number }}</strong><span class="text-muted">R {{ inv.amount }} · {{ inv.client.username }}</span></li>
+            <li><strong>{{ inv.invoice_number }}</strong><span class="text-muted">R {{ inv.amount }} - {{ inv.client.username }}</span></li>
             {% empty %}<li class="text-muted">None overdue.</li>{% endfor %}
         </ul>
     </section>

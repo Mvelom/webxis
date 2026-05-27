@@ -1,22 +1,22 @@
-{% extends "base.html" %}
+{% extends "dashboard/base_dashboard.html" %}
 
 {% block title %}Dashboard{% endblock %}
 
-{% block content %}
-<section class="dashboard-header">
-    <div class="container">
+{% block dashboard_content %}
+<section class="dashboard-header client-page-hero">
+    <div>
         <p class="eyebrow">Client dashboard</p>
         <h1>Welcome{% if profile.company_name %}, {{ profile.company_name }}{% elif user.first_name %}, {{ user.first_name }}{% else %}, {{ user.username }}{% endif %}</h1>
-        <p class="hero-lead">Track your projects and stay up to date on every milestone.</p>
+        <p class="hero-lead">Track your website or application build, see what changed, and keep billing and support in one place.</p>
     </div>
 </section>
 
 <section class="section dashboard-section">
-    <div class="container">
         <div class="dashboard-grid">
             <div class="dashboard-main">
                 <div class="dashboard-panel-header">
                     <h2>Your projects</h2>
+                    <span class="mini-metric">{{ overall_progress|default:0 }}% overall progress</span>
                 </div>
 
                 {% if projects %}
@@ -43,6 +43,13 @@
             </div>
 
             <aside class="dashboard-sidebar">
+                <div class="sidebar-panel client-next-panel">
+                    <span class="client-label">Next best action</span>
+                    <h2>Keep the project moving</h2>
+                    <p>Review the latest project update, send any outstanding content, or open a support request when something needs attention.</p>
+                    <a href="{% url 'client_support' %}" class="btn btn-primary btn-sm">Ask for help</a>
+                </div>
+
                 {% if show_invoices %}
                 <div class="sidebar-panel">
                     <div class="dashboard-panel-header">
@@ -72,14 +79,13 @@
                 {% endif %}
 
                 <div class="sidebar-panel">
-                    <h2>Quick links</h2>
+                    <h2>Client tools</h2>
                     <nav class="dashboard-links">
                         <a href="{% url 'invoices' %}">Invoices</a>
-                        <a href="{% url 'contact' %}">Support</a>
+                        <a href="{% url 'client_support' %}">Support</a>
                     </nav>
                 </div>
             </aside>
         </div>
-    </div>
 </section>
 {% endblock %}

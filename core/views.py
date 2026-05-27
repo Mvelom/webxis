@@ -6,8 +6,23 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
-from .forms import SignInForm, SignUpForm
-from .models import Invoice, Project
+from .forms import ClientSupportTicketForm, SignInForm, SignUpForm
+from .models import Invoice, Project, SupportTicket
+
+
+def _client_portal_context(user, projects=None):
+    if projects is None:
+        projects = Project.objects.filter(client=user)
+    project_list = list(projects)
+    if project_list:
+        overall_progress = round(sum(project.progress_percent for project in project_list) / len(project_list))
+    else:
+        overall_progress = 0
+    return {
+        "sidebar_projects": project_list[:4],
+        "overall_progress": overall_progress,
+        "profile": getattr(user, "client_profile", None),
+    }
 
 
 def home(request):
@@ -102,7 +117,7 @@ def dashboard(request):
             "projects": projects,
             "show_invoices": show_invoices,
             "recent_invoices": invoices,
-            "profile": profile,
+            **_client_portal_context(request.user, projects),
         },
     )
 
@@ -114,7 +129,11 @@ def project_detail(request, pk):
     return render(
         request,
         "dashboard/project_detail.html",
-        {"project": project, "updates": updates},
+        {
+            "project": project,
+            "updates": updates,
+            **_client_portal_context(request.user),
+        },
     )
 
 
@@ -125,7 +144,11 @@ def invoices(request):
         return render(
             request,
             "dashboard/invoices.html",
-            {"invoices": [], "maintenance_required": True},
+            {
+                "invoices": [],
+                "maintenance_required": True,
+                **_client_portal_context(request.user),
+            },
         )
 
     client_invoices = Invoice.objects.filter(client=request.user)
@@ -135,5 +158,34 @@ def invoices(request):
         {
             "invoices": client_invoices,
             "maintenance_required": False,
+            **_client_portal_context(request.user),
+        },
+    )
+
+
+@login_required
+def client_support(request):
+    if request.user.is_staff or request.user.is_superuser:
+        return redirect("staff_support")
+
+    if request.method == "POST":
+        form = ClientSupportTicketForm(request.POST)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.client = request.user
+            ticket.save()
+            messages.success(request, "Support request sent. The webXis team will follow up soon.")
+            return redirect("client_support")
+    else:
+        form = ClientSupportTicketForm()
+
+    tickets = SupportTicket.objects.filter(client=request.user)
+    return render(
+        request,
+        "dashboard/support.html",
+        {
+            "form": form,
+            "tickets": tickets,
+            **_client_portal_context(request.user),
         },
     )
