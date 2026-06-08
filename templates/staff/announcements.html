@@ -1,0 +1,15 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Announcements{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header staff-page-header-row">
+    <h1>Announcements</h1>
+    <a href="{% url 'staff_announcement_create' %}" class="btn btn-primary">+ Publish</a>
+</header>
+<div class="staff-panel">
+    <ul class="staff-feed">
+        {% for item in items %}
+        <li><strong>{{ item.title }}</strong><span class="text-muted">{% if item.is_published %}Published{% else %}Draft{% endif %}</span><p>{{ item.body|truncatewords:30 }}</p></li>
+        {% empty %}<li class="text-muted">No announcements.</li>{% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "staff/base_staff.html" %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block staff_content %}
+<header class="staff-page-header">
+    <a href="{% url 'staff_projects' %}" class="back-link">&larr; Projects</a>
+    <h1>{{ project.name }}</h1>
+    <p class="text-muted">Client: <a href="{% url 'staff_client_detail' project.client_id %}">{{ project.client.username }}</a></p>
+</header>
+
+<div class="staff-two-col">
+    <section class="staff-panel">
+        <h2>Project details</h2>
+        <form method="post" class="staff-form">{% csrf_token %}<input type="hidden" name="action" value="project">
+            {% for field in project_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+        <h2 class="mt-lg">Client update</h2>
+        <form method="post" class="staff-form">{% csrf_token %}<input type="hidden" name="action" value="update">
+            {% for field in update_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary">Publish</button>
+        </form>
+    </section>
+    <section class="staff-panel">
+        <h2>Tasks</h2>
+        <form method="post" class="staff-form compact-form">{% csrf_token %}<input type="hidden" name="action" value="task">
+            {% for field in task_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary btn-sm">Add task</button>
+        </form>
+        <ul class="staff-list">{% for t in tasks %}<li><strong>{{ t.title }}</strong> — {{ t.get_status_display }}{% if t.assigned_to %} ({{ t.assigned_to.username }}){% endif %}</li>{% empty %}<li class="text-muted">No tasks.</li>{% endfor %}</ul>
+        <h2 class="mt-lg">Milestones</h2>
+        <form method="post" class="staff-form compact-form">{% csrf_token %}<input type="hidden" name="action" value="milestone">
+            {% for field in milestone_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary btn-sm">Add milestone</button>
+        </form>
+        <ul class="staff-list">{% for m in milestones %}<li>{% if m.is_completed %}✓{% endif %} {{ m.title }}{% if m.due_date %} — due {{ m.due_date|date:"j M" }}{% endif %}</li>{% endfor %}</ul>
+        <h2 class="mt-lg">Revisions</h2>
+        <form method="post" class="staff-form compact-form">{% csrf_token %}<input type="hidden" name="action" value="revision">
+            {% for field in revision_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary btn-sm">Log revision</button>
+        </form>
+        <ul class="staff-list">{% for r in revisions %}<li><strong>{{ r.title }}</strong> — {{ r.get_status_display }}</li>{% endfor %}</ul>
+    </section>
+</div>
+{% endblock %}

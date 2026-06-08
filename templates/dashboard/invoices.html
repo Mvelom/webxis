@@ -1,0 +1,60 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Invoices — webXis{% endblock %}
+
+{% block dashboard_content %}
+<section class="dashboard-header client-page-hero">
+    <div>
+        <a href="{% url 'dashboard' %}" class="back-link">&larr; Back to dashboard</a>
+        <h1>Invoices</h1>
+        <p class="hero-lead">Maintenance and hosting billing history.</p>
+    </div>
+</section>
+
+<section class="section dashboard-section">
+        {% if maintenance_required %}
+        <div class="empty-state">
+            <h2>Maintenance plan required</h2>
+            <p>Invoices are available for clients on a webXis maintenance and hosting plan. Contact us to enable billing in your dashboard.</p>
+            <a href="{% url 'contact' %}" class="btn btn-primary">Get in touch</a>
+        </div>
+        {% elif invoices %}
+        <!-- FIXED: Updated grid classes to hook cleanly into your styles.css engine definitions -->
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Issued</th>
+                        <th>Due</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                    <tr>
+                        <td><strong>{{ invoice.invoice_number }}</strong></td>
+                        <td>{{ invoice.description }}</td>
+                        <td><strong>R {{ invoice.amount|floatformat:2 }}</strong></td>
+                        <td>{{ invoice.issued_date|date:"j M Y" }}</td>
+                        <td>{{ invoice.due_date|date:"j M Y" }}</td>
+                        <td>
+                            <!-- FIXED: Mapped dynamic billing loops directly into your core styling classes -->
+                            <span class="badge {% if invoice.status == 'paid' %}badge-success{% elif invoice.status == 'overdue' %}badge-danger{% else %}badge-warning{% endif %}">
+                                {{ invoice.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>No invoices on file yet.</p>
+        </div>
+        {% endif %}
+</section>
+{% endblock %}

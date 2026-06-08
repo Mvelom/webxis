@@ -1,0 +1,15 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Media{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header staff-page-header-row">
+    <h1>Media library</h1>
+    <a href="{% url 'staff_media_upload' %}" class="btn btn-primary">+ Upload</a>
+</header>
+<div class="staff-panel">
+    <ul class="staff-list">
+        {% for a in assets %}
+        <li><strong>{{ a.title }}</strong> — {{ a.file.name }} <span class="text-muted">({{ a.created_at|date:"j M Y" }})</span></li>
+        {% empty %}<li class="text-muted">No files.</li>{% endfor %}
+    </ul>
+</div>
+{% endblock %}

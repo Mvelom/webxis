@@ -1,0 +1,23 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Portfolio{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header staff-page-header-row">
+    <h1>Portfolio</h1>
+    <a href="{% url 'staff_portfolio_create' %}" class="btn btn-primary">+ Add item</a>
+</header>
+<div class="staff-panel">
+    <table class="data-table">
+        <thead><tr><th>Title</th><th>Category</th><th>Published</th><th></th></tr></thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.title }}</td>
+                <td>{{ item.category|default:"—" }}</td>
+                <td>{% if item.is_published %}Yes{% else %}Draft{% endif %}</td>
+                <td><a href="{% url 'staff_portfolio_edit' item.pk %}">Edit</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

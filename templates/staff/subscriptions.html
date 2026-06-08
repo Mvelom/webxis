@@ -1,0 +1,25 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Subscriptions{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header staff-page-header-row">
+    <h1>Subscriptions</h1>
+    <a href="{% url 'staff_subscription_create' %}" class="btn btn-primary">+ New subscription</a>
+</header>
+<div class="staff-panel">
+    <table class="data-table">
+        <thead><tr><th>Client</th><th>Package</th><th>Cycle</th><th>Amount</th><th>Next billing</th><th>Status</th></tr></thead>
+        <tbody>
+            {% for s in subscriptions %}
+            <tr>
+                <td>{{ s.client.username }}</td>
+                <td>{{ s.package.name }}</td>
+                <td>{{ s.get_billing_cycle_display }}</td>
+                <td>R {{ s.amount }}</td>
+                <td>{{ s.next_billing_date|date:"j M Y" }}</td>
+                <td>{{ s.get_status_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

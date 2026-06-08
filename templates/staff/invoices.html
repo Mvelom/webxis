@@ -1,0 +1,51 @@
+{% extends "staff/base_staff.html" %}
+
+{% block title %}Invoices{% endblock %}
+
+{% block staff_content %}
+<header class="staff-page-header staff-page-header-row">
+    <div>
+        <h1>Invoices</h1>
+        <div class="filter-pills">
+            <a href="{% url 'staff_invoices' %}" class="{% if not status_filter %}active{% endif %}">All</a>
+            {% for value, label in statuses %}
+            <a href="?status={{ value }}" class="{% if status_filter == value %}active{% endif %}">{{ label }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <a href="{% url 'staff_invoice_create' %}" class="btn btn-primary">+ New invoice</a>
+</header>
+
+<div class="staff-panel">
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Client</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Due</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inv in invoices %}
+                <tr>
+                    <td>{{ inv.invoice_number }}</td>
+                    <td>{{ inv.client.username }}</td>
+                    <td>{{ inv.description }}</td>
+                    <td>R {{ inv.amount }}</td>
+                    <td>{{ inv.due_date|date:"j M Y" }}</td>
+                    <td><span class="badge badge-invoice-{{ inv.status }}">{{ inv.get_status_display }}</span></td>
+                    <td><a href="{% url 'staff_invoice_edit' inv.pk %}">Edit</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-muted">No invoices.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

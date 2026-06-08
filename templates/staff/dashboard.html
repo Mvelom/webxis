@@ -1,0 +1,133 @@
+{% extends "staff/base_staff.html" %}
+
+{% block title %}Admin overview{% endblock %}
+
+{% block staff_content %}
+<header class="staff-page-header admin-hero">
+    <div>
+        <p class="eyebrow">Admin operations center</p>
+        <h1>Run the WebXis pipeline</h1>
+        <p class="text-muted">A sharper view of clients, delivery, finance, content, support, and the work that needs attention now.</p>
+    </div>
+    <div class="hero-action-stack">
+        <a href="{% url 'staff_project_create' %}" class="btn btn-primary btn-sm"><svg class="btn-icon"><use href="#icon-plus"></use></svg>New project</a>
+        <a href="{% url 'staff_client_create' %}" class="btn btn-secondary btn-sm"><svg class="btn-icon"><use href="#icon-users"></use></svg>Add client</a>
+    </div>
+</header>
+
+<section class="admin-command-strip">
+    <div>
+        <span class="client-label">Today at a glance</span>
+        <h2>Operational health</h2>
+    </div>
+    <div class="quick-links">
+        <a href="{% url 'staff_ticket_create' %}" class="btn btn-secondary btn-sm">+ Ticket</a>
+        <a href="{% url 'staff_invoice_create' %}" class="btn btn-secondary btn-sm">+ Invoice</a>
+        <a href="{% url 'staff_payment_create' %}" class="btn btn-secondary btn-sm">+ Payment</a>
+        <a href="{% url 'staff_maintenance_create' %}" class="btn btn-secondary btn-sm">+ Maintenance</a>
+    </div>
+</section>
+
+<div class="stat-grid stat-grid-6 admin-stat-grid">
+    <div class="stat-card"><span class="metric-icon"><svg><use href="#icon-users"></use></svg></span><span class="stat-card-value">{{ stats.client_count }}</span><span class="stat-card-label">Clients</span></div>
+    <div class="stat-card"><span class="metric-icon"><svg><use href="#icon-projects"></use></svg></span><span class="stat-card-value">{{ stats.project_count }}</span><span class="stat-card-label">Projects</span></div>
+    <div class="stat-card"><span class="metric-icon"><svg><use href="#icon-progress"></use></svg></span><span class="stat-card-value">{{ stats.active_projects }}</span><span class="stat-card-label">In progress</span></div>
+    <div class="stat-card stat-card-warn"><span class="metric-icon"><svg><use href="#icon-alert"></use></svg></span><span class="stat-card-value">{{ stats.deadline_risks }}</span><span class="stat-card-label">Deadline risks</span></div>
+    <div class="stat-card"><span class="metric-icon"><svg><use href="#icon-support"></use></svg></span><span class="stat-card-value">{{ stats.open_tickets }}</span><span class="stat-card-label">Open tickets</span></div>
+    <div class="stat-card"><span class="metric-icon"><svg><use href="#icon-finance"></use></svg></span><span class="stat-card-value">R {{ stats.outstanding_total }}</span><span class="stat-card-label">Outstanding</span></div>
+</div>
+
+<section class="admin-dashboard-grid">
+    <div class="admin-main-stack">
+        <section class="staff-panel admin-panel-large">
+            <div class="staff-panel-head">
+                <div>
+                    <span class="client-label">Delivery board</span>
+                    <h2>Project status spread</h2>
+                </div>
+                <a href="{% url 'staff_projects' %}" class="link-sm">View projects</a>
+            </div>
+            <div class="status-board">
+                {% for item in project_status_cards %}
+                <a href="{% url 'staff_projects' %}?status={{ item.value }}" class="status-lane">
+                    <span class="badge badge-{{ item.value }}">{{ item.label }}</span>
+                    <strong>{{ item.count }}</strong>
+                    <div class="progress-bar"><div class="progress-fill" style="width: {% if stats.project_count %}{% widthratio item.count stats.project_count 100 %}{% else %}0{% endif %}%"></div></div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="staff-panel">
+            <div class="staff-panel-head">
+                <div>
+                    <span class="client-label">Recent delivery work</span>
+                    <h2>Projects in motion</h2>
+                </div>
+                <a href="{% url 'staff_project_create' %}" class="link-sm">Create</a>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>Project</th><th>Client</th><th>Status</th><th>Progress</th></tr></thead>
+                    <tbody>
+                        {% for p in recent_projects %}
+                        <tr>
+                            <td><a href="{% url 'staff_project_detail' p.pk %}">{{ p.name }}</a></td>
+                            <td>{{ p.client.username }}</td>
+                            <td><span class="badge badge-{{ p.status }}">{{ p.get_status_display }}</span></td>
+                            <td>
+                                <div class="table-progress">
+                                    <span>{{ p.progress_percent }}%</span>
+                                    <div class="progress-bar"><div class="progress-fill" style="width: {{ p.progress_percent }}%"></div></div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}<tr><td colspan="4" class="text-muted">No projects.</td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <aside class="admin-insight-rail">
+        <section class="staff-panel priority-panel">
+            <span class="client-label">Priority queue</span>
+            <h2>Needs attention</h2>
+            <ul class="staff-feed">
+                {% for t in urgent_tickets %}
+                <li><a href="{% url 'staff_ticket_detail' t.pk %}"><strong>{{ t.subject }}</strong></a><span class="text-muted">{{ t.client.username }} - high priority</span></li>
+                {% empty %}<li class="text-muted">No high priority tickets.</li>{% endfor %}
+            </ul>
+            <h2 class="mt-lg">Overdue invoices</h2>
+            <ul class="staff-feed">
+                {% for inv in overdue_invoices %}
+                <li><strong>{{ inv.invoice_number }}</strong><span class="text-muted">R {{ inv.amount }} - {{ inv.client.username }}</span></li>
+                {% empty %}<li class="text-muted">None overdue.</li>{% endfor %}
+            </ul>
+        </section>
+
+        <section class="staff-panel">
+            <span class="client-label">Finance signal</span>
+            <h2>Cash movement</h2>
+            <div class="finance-signal">
+                <span>Payments this month</span>
+                <strong>R {{ stats.payments_this_month }}</strong>
+            </div>
+            <div class="finance-signal">
+                <span>Active subscriptions</span>
+                <strong>{{ stats.active_subscriptions }}</strong>
+            </div>
+        </section>
+
+        <section class="staff-panel">
+            <span class="client-label">Client intake</span>
+            <h2>Newest clients</h2>
+            <ul class="staff-feed">
+                {% for client in recent_clients %}
+                <li><a href="{% url 'staff_client_detail' client.pk %}"><strong>{% if client.client_profile.company_name %}{{ client.client_profile.company_name }}{% else %}{{ client.username }}{% endif %}</strong></a><span class="text-muted">{{ client.email|default:"No email" }}</span></li>
+                {% empty %}<li class="text-muted">No clients yet.</li>{% endfor %}
+            </ul>
+        </section>
+    </aside>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Packages{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header staff-page-header-row">
+    <h1>Service packages</h1>
+    <a href="{% url 'staff_package_create' %}" class="btn btn-primary">+ New package</a>
+</header>
+<div class="staff-panel">
+    <table class="data-table">
+        <thead><tr><th>Name</th><th>Once-off</th><th>Monthly</th><th>Hosting</th><th>Clients</th><th></th></tr></thead>
+        <tbody>
+            {% for p in packages %}
+            <tr>
+                <td>{{ p.name }}</td>
+                <td>R {{ p.price_once }}</td>
+                <td>R {{ p.price_monthly }}</td>
+                <td>{% if p.includes_hosting %}Yes{% else %}—{% endif %}</td>
+                <td>{{ p.client_count }}</td>
+                <td><a href="{% url 'staff_package_edit' p.pk %}">Edit</a></td>
+            </tr>
+            {% empty %}<tr><td colspan="6" class="text-muted">No packages.</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

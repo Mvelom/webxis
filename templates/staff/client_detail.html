@@ -1,0 +1,61 @@
+{% extends "staff/base_staff.html" %}
+
+{% block title %}{{ client.username }}{% endblock %}
+
+{% block staff_content %}
+<header class="staff-page-header">
+    <a href="{% url 'staff_clients' %}" class="back-link">&larr; Clients</a>
+    <h1>{{ profile.company_name|default:client.username }}</h1>
+    <p class="text-muted">@{{ client.username }} · {{ client.email }}</p>
+</header>
+
+<div class="staff-three-col">
+    <section class="staff-panel">
+        <h2>Profile</h2>
+        <form method="post" class="staff-form">
+            {% csrf_token %}<input type="hidden" name="action" value="profile">
+            {% for field in form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </section>
+    <section class="staff-panel">
+        <h2>Log communication</h2>
+        <form method="post" class="staff-form">
+            {% csrf_token %}<input type="hidden" name="action" value="communication">
+            {% for field in comm_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary">Log</button>
+        </form>
+        <h3 class="mt-lg">History</h3>
+        <ul class="staff-feed">
+            {% for c in communications %}
+            <li><strong>{{ c.subject }}</strong><span class="text-muted">{{ c.get_channel_display }} · {{ c.contacted_at|date:"j M Y" }}</span>{% if c.notes %}<p>{{ c.notes }}</p>{% endif %}</li>
+            {% empty %}<li class="text-muted">No logs.</li>{% endfor %}
+        </ul>
+    </section>
+    <section class="staff-panel">
+        <h2>Packages</h2>
+        <form method="post" class="staff-form">
+            {% csrf_token %}<input type="hidden" name="action" value="package">
+            {% for field in pkg_form %}<div class="form-row"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+            <button type="submit" class="btn btn-secondary">Assign</button>
+        </form>
+        <ul class="staff-list mt-md">
+            {% for cp in client_packages %}
+            <li>{{ cp.package.name }} {% if cp.is_active %}(active){% endif %}</li>
+            {% empty %}<li class="text-muted">No packages.</li>{% endfor %}
+        </ul>
+    </section>
+</div>
+
+<div class="staff-two-col mt-lg">
+    <section class="staff-panel">
+        <div class="staff-panel-head"><h2>Projects</h2><a href="{% url 'staff_project_create' %}?client={{ client.pk }}" class="btn btn-sm btn-secondary">+ Add</a></div>
+        <ul class="staff-list">{% for p in projects %}<li><a href="{% url 'staff_project_detail' p.pk %}">{{ p.name }}</a> — {{ p.progress_percent }}%</li>{% empty %}<li class="text-muted">None.</li>{% endfor %}</ul>
+    </section>
+    <section class="staff-panel">
+        <div class="staff-panel-head"><h2>Tickets & invoices</h2></div>
+        <ul class="staff-list">{% for t in tickets %}<li><a href="{% url 'staff_ticket_detail' t.pk %}">{{ t.subject }}</a></li>{% empty %}<li class="text-muted">No tickets.</li>{% endfor %}</ul>
+        <ul class="staff-list mt-md">{% for inv in invoices %}<li><a href="{% url 'staff_invoice_edit' inv.pk %}">{{ inv.invoice_number }}</a> — R {{ inv.amount }}</li>{% endfor %}</ul>
+    </section>
+</div>
+{% endblock %}

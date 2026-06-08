@@ -1,0 +1,31 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Tickets{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header staff-page-header-row">
+    <div>
+        <h1>Support tickets</h1>
+        <div class="filter-pills">
+            <a href="{% url 'staff_tickets' %}" class="{% if not status_filter %}active{% endif %}">All</a>
+            {% for value, label in statuses %}<a href="?status={{ value }}" class="{% if status_filter == value %}active{% endif %}">{{ label }}</a>{% endfor %}
+        </div>
+    </div>
+    <a href="{% url 'staff_ticket_create' %}" class="btn btn-primary">+ New ticket</a>
+</header>
+<div class="staff-panel">
+    <table class="data-table">
+        <thead><tr><th>#</th><th>Subject</th><th>Client</th><th>Priority</th><th>Status</th><th>Assigned</th></tr></thead>
+        <tbody>
+            {% for t in tickets %}
+            <tr>
+                <td><a href="{% url 'staff_ticket_detail' t.pk %}">{{ t.pk }}</a></td>
+                <td><a href="{% url 'staff_ticket_detail' t.pk %}">{{ t.subject }}</a></td>
+                <td>{{ t.client.username }}</td>
+                <td>{{ t.get_priority_display }}</td>
+                <td>{{ t.get_status_display }}</td>
+                <td>{{ t.assigned_to.username|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

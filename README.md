@@ -44,6 +44,34 @@ docker compose -f docker-compose.dev.yml up --build
 | `/services/` | Services |
 | `/about/` | About |
 | `/contact/` | Contact |
+| `/accounts/signup/` | Client sign up |
+| `/accounts/login/` | Client sign in |
+| `/dashboard/` | Client dashboard (projects & progress) |
+| `/dashboard/invoices/` | Invoices (maintenance/hosting clients) |
+| `/staff/` | Employee dashboard (staff accounts only) |
+
+### Admin dashboard (`/staff/`)
+
+Internal control center for **WebXis Digital** staff (`is_staff=True`). Sign in at `/accounts/login/`.
+
+| Area | Features |
+|------|----------|
+| **Clients** | Add/edit clients, packages, communication logs, project history |
+| **Projects** | Tasks, milestones, revisions, deadlines, progress, client updates |
+| **Finance** | Invoices, payment tracking, subscriptions, package pricing |
+| **Content** | Portfolio, announcements, media uploads |
+| **Support** | Tickets with replies, maintenance logs |
+
+Create staff: `python manage.py createsuperuser` (check **Staff status**).
+
+### Demo client data
+
+```bash
+python manage.py seed_demo_client
+# Login: demo / demo1234
+```
+
+In Django admin, enable **Has maintenance hosting** on a client profile to show invoices.
 
 ## Environment variables
 

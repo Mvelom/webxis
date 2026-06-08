@@ -10,7 +10,9 @@ services:
       DATABASE_PATH: /app/data/db.sqlite3
     volumes:
       - sqlite_data:/app/data
+      - media_data:/app/media
     restart: unless-stopped
 
 volumes:
   sqlite_data:
+  media_data:

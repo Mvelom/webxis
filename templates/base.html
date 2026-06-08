@@ -4,14 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="webXis — modern web solutions: design, development, hosting, and digital strategy.">
+    <meta name="description" content="webXis &mdash; modern web solutions: design, development, hosting, and digital strategy.">
     <title>{% block title %}webXis{% endblock %} | Web Solutions</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
+    {% block site_header %}
     <header class="site-header">
         <div class="container header-inner">
             <a href="{% url 'home' %}" class="logo">
@@ -25,15 +26,39 @@
                 <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
                 <a href="{% url 'services' %}" class="{% if request.resolver_match.url_name == 'services' %}active{% endif %}">Services</a>
                 <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
-                <a href="{% url 'contact' %}" class="nav-cta {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+                <a href="{% url 'contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+                {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                <a href="{% url 'staff_dashboard' %}" class="nav-dashboard {% if '/staff/' in request.path %}active{% endif %}">Staff portal</a>
+                {% else %}
+                <a href="{% url 'dashboard' %}" class="nav-dashboard {% if '/dashboard/' in request.path %}active{% endif %}">Dashboard</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="nav-cta">Sign out</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}">Sign in</a>
+                <a href="{% url 'staff_login' %}" class="{% if '/staff/' in request.path %}active{% endif %}">Staff</a>
+                <a href="{% url 'signup' %}" class="nav-cta {% if request.resolver_match.url_name == 'signup' %}active{% endif %}">Sign up</a>
+                {% endif %}
             </nav>
         </div>
     </header>
+    {% endblock %}
+
+    {% block site_messages %}
+    {% if messages %}
+    <div class="container messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endblock %}
 
     <main>
         {% block content %}{% endblock %}
     </main>
 
+    {% block site_footer %}
     <footer class="site-footer">
         <div class="container footer-grid">
             <div class="footer-brand">
@@ -59,6 +84,7 @@
             <p>&copy; {% now "Y" %} webXis. All rights reserved.</p>
         </div>
     </footer>
+    {% endblock %}
 
     <script src="{% static 'js/main.js' %}"></script>
 </body>

@@ -1,0 +1,14 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Support{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header"><h1>Support system</h1><p class="text-muted">Tickets, client requests, and maintenance logs.</p></header>
+<div class="stat-grid">
+    <div class="stat-card"><span class="stat-card-value">{{ open_tickets }}</span><span class="stat-card-label">Open tickets</span></div>
+    <div class="stat-card"><span class="stat-card-value">{{ in_progress }}</span><span class="stat-card-label">In progress</span></div>
+    <div class="stat-card"><span class="stat-card-value">{{ maintenance_this_month }}</span><span class="stat-card-label">Maintenance this month</span></div>
+</div>
+<div class="hub-links">
+    <a href="{% url 'staff_tickets' %}" class="hub-card">Support tickets</a>
+    <a href="{% url 'staff_maintenance' %}" class="hub-card">Maintenance logs</a>
+</div>
+{% endblock %}

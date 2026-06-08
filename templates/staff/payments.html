@@ -1,0 +1,24 @@
+{% extends "staff/base_staff.html" %}
+{% block title %}Payments{% endblock %}
+{% block staff_content %}
+<header class="staff-page-header staff-page-header-row">
+    <h1>Payment tracking</h1>
+    <a href="{% url 'staff_payment_create' %}" class="btn btn-primary">+ Record payment</a>
+</header>
+<div class="staff-panel">
+    <table class="data-table">
+        <thead><tr><th>Invoice</th><th>Client</th><th>Amount</th><th>Date</th><th>Method</th></tr></thead>
+        <tbody>
+            {% for p in payments %}
+            <tr>
+                <td>{{ p.invoice.invoice_number }}</td>
+                <td>{{ p.invoice.client.username }}</td>
+                <td>R {{ p.amount }}</td>
+                <td>{{ p.payment_date|date:"j M Y" }}</td>
+                <td>{{ p.get_method_display }}</td>
+            </tr>
+            {% empty %}<tr><td colspan="5" class="text-muted">No payments.</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
