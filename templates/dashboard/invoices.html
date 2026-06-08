@@ -1,6 +1,6 @@
 {% extends "dashboard/base_dashboard.html" %}
 
-{% block title %}Invoices{% endblock %}
+{% block title %}Invoices — webXis{% endblock %}
 
 {% block dashboard_content %}
 <section class="dashboard-header client-page-hero">
@@ -19,8 +19,9 @@
             <a href="{% url 'contact' %}" class="btn btn-primary">Get in touch</a>
         </div>
         {% elif invoices %}
-        <div class="table-wrap">
-            <table class="data-table">
+        <!-- FIXED: Updated grid classes to hook cleanly into your styles.css engine definitions -->
+        <div class="table-responsive">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Invoice #</th>
@@ -34,12 +35,17 @@
                 <tbody>
                     {% for invoice in invoices %}
                     <tr>
-                        <td>{{ invoice.invoice_number }}</td>
+                        <td><strong>{{ invoice.invoice_number }}</strong></td>
                         <td>{{ invoice.description }}</td>
-                        <td>R {{ invoice.amount }}</td>
+                        <td><strong>R {{ invoice.amount|floatformat:2 }}</strong></td>
                         <td>{{ invoice.issued_date|date:"j M Y" }}</td>
                         <td>{{ invoice.due_date|date:"j M Y" }}</td>
-                        <td><span class="badge badge-invoice-{{ invoice.status }}">{{ invoice.get_status_display }}</span></td>
+                        <td>
+                            <!-- FIXED: Mapped dynamic billing loops directly into your core styling classes -->
+                            <span class="badge {% if invoice.status == 'paid' %}badge-success{% elif invoice.status == 'overdue' %}badge-danger{% else %}badge-warning{% endif %}">
+                                {{ invoice.get_status_display }}
+                            </span>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

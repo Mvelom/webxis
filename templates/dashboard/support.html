@@ -1,6 +1,6 @@
 {% extends "dashboard/base_dashboard.html" %}
 
-{% block title %}Support{% endblock %}
+{% block title %}Support — webXis{% endblock %}
 
 {% block dashboard_content %}
 <header class="portal-page-header client-page-hero">
@@ -9,38 +9,48 @@
     <p class="hero-lead">Send questions, change requests, hosting issues, or launch blockers directly to the webXis team.</p>
 </header>
 
-<div class="client-workspace-grid">
-    <section class="detail-card support-form-card">
-        <h2>Open a support ticket</h2>
+<div class="client-workspace-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+    <!-- FIXED: Connected wrapper elements directly to your .tile stylesheet configurations -->
+    <section class="tile support-form-card">
+        <div class="tile-label" style="font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text);">Open a support ticket</div>
         <form method="post" class="auth-form">
             {% csrf_token %}
             {% for field in form %}
-            <div class="form-row">
+            <!-- FIXED: Group rows mapped cleanly to .form-group -->
+            <div class="form-group">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
-                {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+                <!-- FIXED: Errors rerouted to load your custom .errorlist indicator values -->
+                {% if field.errors %}
+                <ul class="errorlist" style="margin-top: 0.25rem;">
+                    <li>{{ field.errors.0 }}</li>
+                </ul>
+                {% endif %}
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-primary">Send request</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Send request</button>
         </form>
     </section>
 
-    <section class="detail-card">
-        <h2>Your tickets</h2>
+    <section class="tile">
+        <div class="tile-label" style="font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text);">Your tickets</div>
         {% if tickets %}
-        <ul class="support-ticket-list">
+        <ul class="timeline-list" style="list-style: none; padding-left: 0; display: grid; gap: 1.25rem;">
             {% for ticket in tickets %}
-            <li>
+            <li style="display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
                 <div>
-                    <strong>{{ ticket.subject }}</strong>
-                    <span class="update-date">Updated {{ ticket.updated_at|date:"j M Y" }}</span>
+                    <strong style="display: block; color: var(--text); font-size: 1rem;">{{ ticket.subject }}</strong>
+                    <span class="help-text">Updated {{ ticket.updated_at|date:"j M Y" }}</span>
                 </div>
-                <span class="badge badge-ticket-{{ ticket.status }}">{{ ticket.get_status_display }}</span>
+                <!-- FIXED: Re-mapped badge selectors to load standard color classes dynamically -->
+                <span class="badge {% if ticket.status == 'closed' %}badge-success{% elif ticket.status == 'open' %}badge-danger{% else %}badge-warning{% endif %}">
+                    {{ ticket.get_status_display }}
+                </span>
             </li>
             {% endfor %}
         </ul>
         {% else %}
-        <p class="text-muted">No support requests yet.</p>
+        <p class="text-muted" style="margin-top: 0.5rem;">No support requests yet.</p>
         {% endif %}
     </section>
 </div>

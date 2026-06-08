@@ -1,31 +1,49 @@
 {% extends "base.html" %}
 
-{% block title %}Sign up{% endblock %}
+{% block title %}Sign up — webXis{% endblock %}
 
 {% block content %}
-<section class="auth-section">
-    <div class="auth-card auth-card-wide">
+<section class="auth-section" style="display: grid; place-items: center; padding: 4rem 0; min-height: calc(80vh - 100px);">
+    <!-- FIXED: Connected item wrappers directly to your .tile stylesheet configurations -->
+    <div class="tile auth-card auth-card-wide" style="width: 100%; max-width: 520px; padding: 2.5rem;">
         <p class="eyebrow">Client portal</p>
-        <h1>Create your account</h1>
-        <p class="auth-lead">Sign up to track your website or app build and manage billing.</p>
+        <h1 style="margin-block: 0 1rem; font-family: var(--font-display);">Create your account</h1>
+        <p class="auth-lead" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.5;">
+            Sign up to track your website or app build and manage billing.
+        </p>
 
         <form method="post" class="auth-form">
             {% csrf_token %}
+            <!-- FIXED: Non-field errors converted to load your custom errorlist layout -->
             {% if form.non_field_errors %}
-            <div class="form-errors">{{ form.non_field_errors }}</div>
+            <div class="errorlist" style="margin-bottom: 1.25rem; list-style: none;">
+                {{ form.non_field_errors }}
+            </div>
             {% endif %}
+
             {% for field in form %}
-            <div class="form-row">
+            <!-- FIXED: Group rows mapped cleanly to your .form-group properties -->
+            <div class="form-group">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
-                {% if field.help_text %}<span class="field-help">{{ field.help_text }}</span>{% endif %}
-                {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+                <!-- FIXED: Field descriptions mapped cleanly to .help-text -->
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+                <!-- FIXED: Errors rerouted to load your custom crimson alert layout -->
+                {% if field.errors %}
+                <ul class="errorlist" style="margin-top: 0.25rem;">
+                    <li>{{ field.errors.0 }}</li>
+                </ul>
+                {% endif %}
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-primary btn-block">Create account</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Create account</button>
         </form>
 
-        <p class="auth-switch">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+        <p class="auth-switch" style="margin-top: 1.5rem; text-align: center; font-size: 0.95rem; color: var(--text-muted);">
+            Already have an account? <a href="{% url 'login' %}" style="color: var(--accent); font-weight: 600;">Sign in</a>
+        </p>
     </div>
 </section>
 {% endblock %}

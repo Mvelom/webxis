@@ -1,45 +1,54 @@
 {% extends "dashboard/base_dashboard.html" %}
 
-{% block title %}{{ project.name }}{% endblock %}
+{% block title %}{{ project.name }} — webXis{% endblock %}
 
 {% block dashboard_content %}
 <section class="dashboard-header client-page-hero">
     <div>
         <a href="{% url 'dashboard' %}" class="back-link">&larr; Back to dashboard</a>
         <h1>{{ project.name }}</h1>
-        <p class="hero-lead">{{ project.get_project_type_display }} · {{ project.get_status_display }}</p>
+        <p class="hero-lead">
+            {{ project.get_project_type_display }} &middot;
+            <!-- FIXED: Assigned standard status badge colors to match project status display parameters -->
+            <span class="badge {% if project.status == 'launched' %}badge-success{% elif project.status == 'planning' or project.status == 'design' %}badge-info{% else %}badge-warning{% endif %}">
+                {{ project.get_status_display }}
+            </span>
+        </p>
     </div>
 </section>
 
 <section class="section dashboard-section">
-    <div class="dashboard-detail">
-        <div class="detail-card">
-            <h2>Progress</h2>
-            <div class="progress-bar progress-bar-lg">
+    <!-- FIXED: Connected item wrappers to your .dashboard-grid layout framework and .tile utility selectors -->
+    <div class="dashboard-grid">
+        <div class="tile">
+            <div class="tile-label">Build Progress</div>
+            <div class="progress-bar progress-bar-lg" style="margin-block: 1rem;">
                 <div class="progress-fill" style="width: {{ project.progress_percent }}%"></div>
             </div>
-            <p class="progress-label">{{ project.progress_percent }}% complete</p>
+            <strong class="tile-value">{{ project.progress_percent }}% complete</strong>
             {% if project.target_launch_date %}
-            <p class="text-muted">Target launch: {{ project.target_launch_date|date:"j F Y" }}</p>
+            <p class="help-text" style="font-size: 0.9rem; margin-top: 0.5rem;">Target launch date: <strong>{{ project.target_launch_date|date:"j F Y" }}</strong></p>
             {% endif %}
         </div>
 
         {% if project.description %}
-        <div class="detail-card">
-            <h2>Overview</h2>
-            <p>{{ project.description }}</p>
+        <div class="tile" style="grid-column: span 1;">
+            <div class="tile-label">Project Overview</div>
+            <p style="margin-top: 0.5rem; color: var(--text);">{{ project.description }}</p>
         </div>
         {% endif %}
+    </div>
 
-        <div class="detail-card">
-            <h2>Recent updates</h2>
+    <div class="form-group" style="margin-top: 2rem;">
+        <div class="tile">
+            <div class="tile-label" style="margin-bottom: 1rem;">Recent Developer Updates</div>
             {% if updates %}
-            <ul class="update-list">
+            <ul class="timeline-list" style="list-style: none; padding-left: 0;">
                 {% for update in updates %}
-                <li>
-                    <strong>{{ update.title }}</strong>
-                    <span class="update-date">{{ update.created_at|date:"j M Y" }}</span>
-                    {% if update.body %}<p>{{ update.body }}</p>{% endif %}
+                <li style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);">
+                    <strong style="font-size: 1.1rem; display: block; color: var(--text);">{{ update.title }}</strong>
+                    <span class="help-text" style="margin-block: 0.25rem 0.5rem;">Posted on {{ update.created_at|date:"j M Y" }}</span>
+                    {% if update.body %}<p style="margin: 0; color: var(--text-muted);">{{ update.body }}</p>{% endif %}
                 </li>
                 {% endfor %}
             </ul>

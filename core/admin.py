@@ -38,12 +38,14 @@ class ServicePackageAdmin(admin.ModelAdmin):
 class ClientPackageAdmin(admin.ModelAdmin):
     list_display = ("client", "package", "is_active", "started_at")
     list_filter = ("is_active",)
+    raw_id_fields = ("client",)
 
 
 @admin.register(CommunicationLog)
 class CommunicationLogAdmin(admin.ModelAdmin):
     list_display = ("subject", "client", "channel", "contacted_at")
     list_filter = ("channel",)
+    raw_id_fields = ("client",)
 
 
 class ProjectUpdateInline(admin.TabularInline):
@@ -65,6 +67,7 @@ class MilestoneInline(admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ("name", "client", "status", "progress_percent", "deadline")
     list_filter = ("status", "project_type")
+    raw_id_fields = ("client",)
     inlines = [ProjectTaskInline, MilestoneInline, ProjectUpdateInline]
 
 
@@ -83,6 +86,7 @@ class PaymentInline(admin.TabularInline):
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ("invoice_number", "client", "amount", "status", "due_date")
     list_filter = ("status",)
+    raw_id_fields = ("client",)
     inlines = [PaymentInline]
 
 
@@ -90,6 +94,7 @@ class InvoiceAdmin(admin.ModelAdmin):
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ("client", "package", "status", "next_billing_date", "amount")
     list_filter = ("status", "billing_cycle")
+    raw_id_fields = ("client",)
 
 
 @admin.register(PortfolioItem)
@@ -117,9 +122,11 @@ class TicketReplyInline(admin.TabularInline):
 class SupportTicketAdmin(admin.ModelAdmin):
     list_display = ("subject", "client", "status", "priority", "assigned_to", "updated_at")
     list_filter = ("status", "priority")
+    raw_id_fields = ("client",)
     inlines = [TicketReplyInline]
 
 
 @admin.register(MaintenanceLog)
 class MaintenanceLogAdmin(admin.ModelAdmin):
     list_display = ("title", "client", "performed_at", "performed_by")
+    raw_id_fields = ("client",)

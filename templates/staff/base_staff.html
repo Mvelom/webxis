@@ -6,6 +6,7 @@
 {% block site_footer %}{% endblock %}
 
 {% block content %}
+{% include "includes/icon_sprite.html" %}
 <div class="staff-layout portal-shell admin-shell">
     <aside class="staff-sidebar portal-sidebar admin-sidebar">
         <a href="{% url 'staff_dashboard' %}" class="portal-brand">
@@ -14,15 +15,15 @@
         </a>
         <p class="staff-sidebar-label">Admin operations</p>
         <nav class="staff-nav">
-            <a href="{% url 'staff_dashboard' %}" class="{% if request.resolver_match.url_name == 'staff_dashboard' %}active{% endif %}"><span class="nav-icon">H</span>Home</a>
+            <a href="{% url 'staff_dashboard' %}" class="{% if request.resolver_match.url_name == 'staff_dashboard' %}active{% endif %}"><span class="nav-icon"><svg><use href="#icon-home"></use></svg></span>Home</a>
             <span class="staff-nav-group">Clients</span>
-            <a href="{% url 'staff_clients' %}" class="{% if 'staff_client' in request.resolver_match.url_name %}active{% endif %}"><span class="nav-icon">C</span>Clients</a>
+            <a href="{% url 'staff_clients' %}" class="{% if 'staff_client' in request.resolver_match.url_name %}active{% endif %}"><span class="nav-icon"><svg><use href="#icon-users"></use></svg></span>Clients</a>
             <a href="{% url 'staff_packages' %}">Packages</a>
             <span class="staff-nav-group">Projects</span>
-            <a href="{% url 'staff_projects' %}" class="{% if 'staff_project' in request.resolver_match.url_name %}active{% endif %}"><span class="nav-icon">P</span>Projects &amp; progress</a>
+            <a href="{% url 'staff_projects' %}" class="{% if 'staff_project' in request.resolver_match.url_name %}active{% endif %}"><span class="nav-icon"><svg><use href="#icon-projects"></use></svg></span>Projects &amp; progress</a>
             <span class="staff-nav-group">Finance</span>
-            <a href="{% url 'staff_finance' %}"><span class="nav-icon">F</span>Finance hub</a>
-            <a href="{% url 'staff_invoices' %}"><span class="nav-icon">I</span>Invoices</a>
+            <a href="{% url 'staff_finance' %}"><span class="nav-icon"><svg><use href="#icon-finance"></use></svg></span>Finance hub</a>
+            <a href="{% url 'staff_invoices' %}"><span class="nav-icon"><svg><use href="#icon-invoice"></use></svg></span>Invoices</a>
             <a href="{% url 'staff_payments' %}">Payments</a>
             <a href="{% url 'staff_subscriptions' %}">Subscriptions</a>
             <span class="staff-nav-group">Content</span>
@@ -31,7 +32,7 @@
             <a href="{% url 'staff_announcements' %}">Announcements</a>
             <a href="{% url 'staff_media' %}">Media</a>
             <span class="staff-nav-group">Support</span>
-            <a href="{% url 'staff_support' %}"><span class="nav-icon">S</span>Support hub</a>
+            <a href="{% url 'staff_support' %}"><span class="nav-icon"><svg><use href="#icon-support"></use></svg></span>Support hub</a>
             <a href="{% url 'staff_tickets' %}">Tickets</a>
             <a href="{% url 'staff_maintenance' %}">Maintenance logs</a>
             <a href="{% url 'admin:index' %}" target="_blank" rel="noopener" class="staff-nav-admin">Django admin</a>

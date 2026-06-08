@@ -74,18 +74,35 @@ def staff_dashboard(request):
     projects = Project.objects.select_related("client")
     invoices = Invoice.objects.all()
     tickets = SupportTicket.objects.exclude(status=SupportTicket.Status.CLOSED)
+    overdue_invoices = invoices.filter(
+        status__in=[Invoice.Status.SENT, Invoice.Status.OVERDUE],
+        due_date__lt=today,
+    )
+    outstanding_invoices = invoices.filter(status__in=[Invoice.Status.SENT, Invoice.Status.OVERDUE])
+    payments_this_month = Payment.objects.filter(
+        payment_date__year=today.year,
+        payment_date__month=today.month,
+    )
+    project_status_cards = [
+        {
+            "label": label,
+            "count": projects.filter(status=value).count(),
+            "value": value,
+        }
+        for value, label in Project.Status.choices
+    ]
 
     stats = {
         "client_count": _client_queryset().count(),
         "project_count": projects.count(),
         "active_projects": projects.exclude(status=Project.Status.LAUNCHED).count(),
-        "overdue_invoices": invoices.filter(
-            status__in=[Invoice.Status.SENT, Invoice.Status.OVERDUE],
-            due_date__lt=today,
-        ).count(),
+        "overdue_invoices": overdue_invoices.count(),
         "open_tickets": tickets.filter(status=SupportTicket.Status.OPEN).count(),
         "active_subscriptions": Subscription.objects.filter(status=Subscription.Status.ACTIVE).count(),
         "published_portfolio": PortfolioItem.objects.filter(is_published=True).count(),
+        "outstanding_total": outstanding_invoices.aggregate(total=Sum("amount"))["total"] or 0,
+        "payments_this_month": payments_this_month.aggregate(total=Sum("amount"))["total"] or 0,
+        "deadline_risks": projects.exclude(status=Project.Status.LAUNCHED).filter(deadline__lt=today).count(),
     }
 
     return render(
@@ -95,11 +112,13 @@ def staff_dashboard(request):
             "stats": stats,
             "recent_projects": projects[:6],
             "recent_updates": ProjectUpdate.objects.select_related("project")[:5],
-            "overdue_invoices": invoices.filter(
-                status__in=[Invoice.Status.SENT, Invoice.Status.OVERDUE],
-                due_date__lt=today,
+            "project_status_cards": project_status_cards,
+            "overdue_invoices": overdue_invoices[:5],
+            "urgent_tickets": tickets.exclude(status=SupportTicket.Status.RESOLVED).filter(
+                priority=SupportTicket.Priority.HIGH,
             )[:5],
             "open_tickets": tickets.order_by("-updated_at")[:5],
+            "recent_clients": _client_queryset().order_by("-date_joined")[:5],
         },
     )
 

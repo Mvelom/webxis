@@ -3,53 +3,178 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<section class="hero">
-    <div class="container hero-inner">
-        <p class="eyebrow">Web Solutions Company</p>
-        <h1>We build websites that <span class="gradient-text">work for your business</span></h1>
-        <p class="hero-lead">
-            webXis designs, develops, and maintains modern websites and web apps —
-            from landing pages to full-scale platforms.
-        </p>
-        <div class="hero-actions">
-            <a href="{% url 'contact' %}" class="btn btn-primary">Start a project</a>
-            <a href="{% url 'services' %}" class="btn btn-secondary">Our services</a>
+{% include "includes/icon_sprite.html" %}
+
+<section class="hero home-hero">
+    <div class="container home-hero-grid">
+        <div class="hero-inner">
+            <p class="eyebrow">Web Solutions Company</p>
+            <h1>Websites and apps that feel clear, modern, and ready for business</h1>
+            <p class="hero-lead">
+                webXis designs, develops, launches, and maintains digital platforms for growing companies.
+                From your first landing page to full client portals, we keep the work focused and visible.
+            </p>
+            <div class="hero-actions">
+                <a href="{% url 'contact' %}" class="btn btn-primary">Start a project</a>
+                <a href="{% url 'services' %}" class="btn btn-secondary">Explore services</a>
+            </div>
+        </div>
+
+        <div class="home-hero-visual" aria-label="Project dashboard preview">
+            <div class="visual-toolbar">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="visual-card visual-card-main">
+                <div>
+                    <small>Build progress</small>
+                    <strong>74%</strong>
+                </div>
+                <div class="progress-bar progress-bar-lg">
+                    <div class="progress-fill" style="width: 74%"></div>
+                </div>
+            </div>
+            <div class="visual-grid">
+                <div class="visual-card">
+                    <small>Design</small>
+                    <strong>Approved</strong>
+                </div>
+                <div class="visual-card">
+                    <small>Launch</small>
+                    <strong>12 days</strong>
+                </div>
+            </div>
+            <div class="visual-list">
+                <span></span><span></span><span></span>
+            </div>
         </div>
     </div>
     <div class="hero-glow" aria-hidden="true"></div>
 </section>
 
+<section class="home-proof-strip">
+    <div class="container proof-grid">
+        <div>
+            <strong>Websites</strong>
+            <span>Responsive marketing sites and portfolios</span>
+        </div>
+        <div>
+            <strong>Web apps</strong>
+            <span>Dashboards, portals, tools, and workflows</span>
+        </div>
+        <div>
+            <strong>Support</strong>
+            <span>Hosting, maintenance, revisions, and care</span>
+        </div>
+    </div>
+</section>
+
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <h2>What we do</h2>
-            <p>End-to-end web solutions tailored to your goals.</p>
+            <p class="eyebrow">What we build</p>
+            <h2>Digital systems with a business purpose</h2>
+            <p>Each service is designed to help your company look credible, operate better, and grow online.</p>
         </div>
-        <div class="card-grid">
-            <article class="card">
-                <div class="card-icon">01</div>
-                <h3>Web Design</h3>
-                <p>Clean, responsive interfaces that reflect your brand and convert visitors into customers.</p>
+        <div class="home-service-grid">
+            <article class="home-service-card">
+                <span class="service-icon"><svg><use href="#icon-home"></use></svg></span>
+                <h3>Business Websites</h3>
+                <p>Clean, responsive websites for companies that need a stronger online presence and better conversions.</p>
             </article>
-            <article class="card">
-                <div class="card-icon">02</div>
-                <h3>Development</h3>
-                <p>Fast, secure sites built with Django, modern frontends, and best-practice architecture.</p>
+            <article class="home-service-card">
+                <span class="service-icon"><svg><use href="#icon-projects"></use></svg></span>
+                <h3>Web Applications</h3>
+                <p>Custom dashboards, client portals, booking tools, internal systems, and workflow platforms.</p>
             </article>
-            <article class="card">
-                <div class="card-icon">03</div>
-                <h3>Support & Hosting</h3>
-                <p>Ongoing maintenance, updates, and reliable hosting so your site stays online and secure.</p>
+            <article class="home-service-card">
+                <span class="service-icon"><svg><use href="#icon-progress"></use></svg></span>
+                <h3>Project Visibility</h3>
+                <p>Clients can track progress, invoices, support requests, and updates from a dedicated dashboard.</p>
+            </article>
+            <article class="home-service-card">
+                <span class="service-icon"><svg><use href="#icon-support"></use></svg></span>
+                <h3>Maintenance & Hosting</h3>
+                <p>Ongoing care, updates, security checks, content changes, and hosting support after launch.</p>
             </article>
         </div>
     </div>
 </section>
 
 <section class="section section-alt">
-    <div class="container cta-banner">
+    <div class="container split-section">
         <div>
-            <h2>Ready to launch your next website?</h2>
-            <p>Tell us about your project — we’ll reply within one business day.</p>
+            <p class="eyebrow">How projects move</p>
+            <h2>A clear path from idea to launch</h2>
+            <p class="section-copy">You should never wonder what stage your website or application is in. We break the work into visible steps and keep progress easy to follow.</p>
+        </div>
+        <div class="process-list">
+            <article>
+                <span>01</span>
+                <div>
+                    <h3>Discovery</h3>
+                    <p>We define goals, users, pages, features, and what success should look like.</p>
+                </div>
+            </article>
+            <article>
+                <span>02</span>
+                <div>
+                    <h3>Design</h3>
+                    <p>Your brand, layout, flow, and interface direction are shaped before development begins.</p>
+                </div>
+            </article>
+            <article>
+                <span>03</span>
+                <div>
+                    <h3>Build</h3>
+                    <p>We develop the website or app, connect the required features, and test core workflows.</p>
+                </div>
+            </article>
+            <article>
+                <span>04</span>
+                <div>
+                    <h3>Launch & support</h3>
+                    <p>After launch, maintenance and support keep the platform stable and useful.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container dashboard-showcase">
+        <div class="showcase-panel">
+            <p class="eyebrow">Client dashboard</p>
+            <h2>Clients see progress, updates, invoices, and support in one place</h2>
+            <p class="section-copy">Your customers or internal team do not need to chase scattered messages. Project progress and communication can live inside a simple portal.</p>
+            <a href="{% url 'signup' %}" class="btn btn-primary btn-sm">Create client access</a>
+        </div>
+        <div class="showcase-mockup">
+            <div class="mockup-row">
+                <span class="metric-icon"><svg><use href="#icon-progress"></use></svg></span>
+                <div>
+                    <strong>Website build</strong>
+                    <small>Review & testing</small>
+                </div>
+                <b>88%</b>
+            </div>
+            <div class="progress-bar progress-bar-lg">
+                <div class="progress-fill" style="width: 88%"></div>
+            </div>
+            <div class="mockup-columns">
+                <div><span>Invoices</span><strong>2</strong></div>
+                <div><span>Updates</span><strong>7</strong></div>
+                <div><span>Tickets</span><strong>1</strong></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container cta-banner home-final-cta">
+        <div>
+            <p class="eyebrow">Ready when you are</p>
+            <h2>Let us turn the rough idea into a working digital product.</h2>
+            <p>Tell us what you want to build. We will help shape the scope, timeline, and next step.</p>
         </div>
         <a href="{% url 'contact' %}" class="btn btn-primary">Get a quote</a>
     </div>

@@ -2,12 +2,13 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from .forms import ClientSupportTicketForm, SignInForm, SignUpForm
-from .models import Invoice, Project, SupportTicket
+from .models import Invoice, Project, ProjectUpdate, SupportTicket
 
 
 def _client_portal_context(user, projects=None):
@@ -103,12 +104,40 @@ def sign_out(request):
 def dashboard(request):
     if request.user.is_staff or request.user.is_superuser:
         return redirect("staff_dashboard")
+
     projects = Project.objects.filter(client=request.user)
     profile = getattr(request.user, "client_profile", None)
     show_invoices = profile and profile.has_maintenance_hosting
-    invoices = []
+
+    invoices_list = []
     if show_invoices:
-        invoices = Invoice.objects.filter(client=request.user)[:5]
+        invoices_list = Invoice.objects.filter(client=request.user)[:5]
+
+    client_tickets = SupportTicket.objects.filter(client=request.user)
+    billing_invoices = Invoice.objects.filter(client=request.user)
+
+    next_project = (
+        projects.exclude(status=Project.Status.LAUNCHED)
+        .order_by("target_launch_date", "-updated_at")
+        .first()
+    )
+
+    recent_updates = ProjectUpdate.objects.filter(project__client=request.user).select_related("project")[:4]
+
+    client_stats = {
+        "project_count": projects.count(),
+        "active_projects": projects.exclude(
+            status__in=[Project.Status.LAUNCHED, Project.Status.MAINTENANCE],
+        ).count(),
+        "open_tickets": client_tickets.exclude(
+            status__in=[SupportTicket.Status.RESOLVED, SupportTicket.Status.CLOSED],
+        ).count(),
+        "balance_due": billing_invoices.filter(
+            status__in=[Invoice.Status.SENT, Invoice.Status.OVERDUE],
+        ).aggregate(total=Sum("amount"))["total"]
+        or 0,
+        "next_launch": next_project.target_launch_date if next_project else None,
+    }
 
     return render(
         request,
@@ -116,7 +145,11 @@ def dashboard(request):
         {
             "projects": projects,
             "show_invoices": show_invoices,
-            "recent_invoices": invoices,
+            "recent_invoices": invoices_list,
+            "client_stats": client_stats,
+            "next_project": next_project,
+            "recent_updates": recent_updates,
+            "support_tickets": client_tickets[:4],
             **_client_portal_context(request.user, projects),
         },
     )

@@ -1,33 +1,46 @@
 {% extends "base.html" %}
 
-{% block title %}Sign in{% endblock %}
+{% block title %}Sign in — webXis{% endblock %}
 
 {% block content %}
-<section class="auth-section">
-    <div class="auth-card">
+<section class="auth-section" style="display: grid; place-items: center; padding: 4rem 0; min-height: calc(80vh - 100px);">
+    <!-- FIXED: Connected item wrappers directly to your .tile stylesheet definitions -->
+    <div class="tile auth-card" style="width: 100%; max-width: 460px; padding: 2.5rem;">
         <p class="eyebrow">webXis sign in</p>
-        <h1>Sign in</h1>
-        <p class="auth-lead">
+        <h1 style="margin-block: 0 1rem; font-family: var(--font-display);">Sign in</h1>
+        <p class="auth-lead" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.5;">
             <strong>Staff &amp; admin:</strong> use the same username and password as Django admin — you will be taken to the <a href="{% url 'staff_dashboard' %}">admin dashboard</a>.<br>
             <strong>Clients:</strong> track projects, progress, and invoices.
         </p>
 
         <form method="post" class="auth-form">
             {% csrf_token %}
+            <!-- FIXED: Non-field validation errors converted to load your custom errorlist selector -->
             {% if form.non_field_errors %}
-            <div class="form-errors">{{ form.non_field_errors }}</div>
+            <div class="errorlist" style="margin-bottom: 1.25rem; list-style: none;">
+                {{ form.non_field_errors }}
+            </div>
             {% endif %}
+
             {% for field in form %}
-            <div class="form-row">
+            <!-- FIXED: Group row blocks mapped cleanly to your .form-group properties -->
+            <div class="form-group">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
-                {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+                <!-- FIXED: Errors rerouted to load your custom alert states -->
+                {% if field.errors %}
+                <ul class="errorlist" style="margin-top: 0.25rem;">
+                    <li>{{ field.errors.0 }}</li>
+                </ul>
+                {% endif %}
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Sign in</button>
         </form>
 
-        <p class="auth-switch">Client account? <a href="{% url 'signup' %}">Create an account</a></p>
+        <p class="auth-switch" style="margin-top: 1.5rem; text-align: center; font-size: 0.95rem; color: var(--text-muted);">
+            Client account? <a href="{% url 'signup' %}" style="color: var(--accent); font-weight: 600;">Create an account</a>
+        </p>
     </div>
 </section>
 {% endblock %}

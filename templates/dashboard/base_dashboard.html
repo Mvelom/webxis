@@ -6,6 +6,7 @@
 {% block site_footer %}{% endblock %}
 
 {% block content %}
+{% include "includes/icon_sprite.html" %}
 <div class="portal-shell client-shell">
     <aside class="portal-sidebar client-sidebar">
         <a href="{% url 'dashboard' %}" class="portal-brand">
@@ -23,13 +24,13 @@
 
         <nav class="portal-nav">
             <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                <span class="nav-icon">H</span><span>Home</span>
+                <span class="nav-icon"><svg><use href="#icon-home"></use></svg></span><span>Home</span>
             </a>
             <a href="{% url 'invoices' %}" class="{% if request.resolver_match.url_name == 'invoices' %}active{% endif %}">
-                <span class="nav-icon">I</span><span>Invoices</span>
+                <span class="nav-icon"><svg><use href="#icon-invoice"></use></svg></span><span>Invoices</span>
             </a>
             <a href="{% url 'client_support' %}" class="{% if request.resolver_match.url_name == 'client_support' %}active{% endif %}">
-                <span class="nav-icon">S</span><span>Support</span>
+                <span class="nav-icon"><svg><use href="#icon-support"></use></svg></span><span>Support</span>
             </a>
         </nav>
 
@@ -63,12 +64,13 @@
 
     <main class="portal-main client-main">
         {% if messages %}
-        <div class="portal-messages">
+        <div class="messages-container portal-messages">
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }}">{{ message }}</div>
             {% endfor %}
         </div>
         {% endif %}
+
         {% block dashboard_content %}{% endblock %}
     </main>
 </div>
